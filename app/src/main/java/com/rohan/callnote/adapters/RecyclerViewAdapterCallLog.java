@@ -15,6 +15,7 @@ import com.rohan.callnote.BaseCallNoteActivity;
 import com.rohan.callnote.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
     public RecyclerViewAdapterCallLog(Context context) {
         mContext = context;
+        mCallsList = new ArrayList<>();
     }
 
     public void setRecyclerViewCallLogList(List<Call> callsList) {

@@ -15,13 +15,6 @@
         android:paddingTop="4dp"
         android:scrollbarStyle="outsideOverlay" />
 
-    <TextView
-        android:id="@+id/test_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="bla bla bla bla" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_call_fab"
         android:layout_width="56dp"

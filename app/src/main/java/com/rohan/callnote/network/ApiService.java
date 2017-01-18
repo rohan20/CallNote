@@ -21,7 +21,7 @@ public interface APIService {
     Call<ApiResponse<User>> signUp(@Query("name") String name, @Query("email") String email, @Query("gtoken") String token);
 
     @POST("add_note.json")
-    Call<ApiResponse<Note>> addNote(@Query("contact") String number, @Query("text") String noteText);
+    Call<ApiResponse<Note>> addNote(@Query("contact") String number, @Query("text") String noteText, @Query("note_type") int callType);
 
     @GET("all_notes.json")
     Call<ApiResponse<List<Note>>> getNotes();

@@ -1,7 +1,6 @@
 package com.rohan.callnote;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.SignInButton;
 import com.rohan.callnote.utils.UserUtil;
 
@@ -52,7 +50,7 @@ public class LoginFragment extends BaseCallNoteFragment {
     @OnClick(R.id.google_sign_in_button)
     public void signIn() {
 
-        getBaseCallNoteActivity().showSignInProgressDialog();
+        getBaseCallNoteActivity().showProgressDialog("Signing in...");
 
         if (getBaseCallNoteActivity().isNetworkConnected()) {
             getBaseCallNoteActivity().signIn();

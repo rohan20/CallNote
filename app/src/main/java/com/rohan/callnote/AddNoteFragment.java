@@ -4,7 +4,6 @@ package com.rohan.callnote;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.callnote.models.Note;
+import com.rohan.callnote.network.APIClient;
+import com.rohan.callnote.network.response.ApiResponse;
+import com.rohan.callnote.utils.Constants;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -44,6 +51,11 @@ public class AddNoteFragment extends BaseCallNoteFragment {
     @BindView(R.id.add_note_cancel_button)
     Button mCancelButton;
 
+    String name;
+    String number;
+    int callType;
+    long timestamp;
+
     public AddNoteFragment() {
         // Required empty public constructor
     }
@@ -61,28 +73,34 @@ public class AddNoteFragment extends BaseCallNoteFragment {
         InputMethodManager imm = (InputMethodManager) getBaseCallNoteActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-        //set caller name
-        if (b.getString("name") == null) {
-            mCallNameTextView.setText(b.getString("number"));
-        } else {
-            mCallNameTextView.setText(b.getString("name"));
+        if (b != null) {
+            name = b.getString("name");
+            number = b.getString("number");
+            callType = b.getInt("callType");
+            timestamp = b.getLong("date");
         }
 
-        //set call type
-        int callType = b.getInt("callType");
-        if (callType == 0) {
+        //set caller name
+        if (name == null) {
+            mCallNameTextView.setText(number);
+        } else {
+            mCallNameTextView.setText(name);
+        }
+
+        //set call type (0: Missed, 1: Received, 2: Dialed)
+        if (callType == Constants.CALL_MISSED) {
             mCallTypeImageView.setImageResource(R.drawable.ic_call_missed_red_300_18dp);
-        } else if (callType == 1) {
+        } else if (callType == Constants.CALL_RECEIVED) {
             mCallTypeImageView.setImageResource(R.drawable.ic_call_received_blue_300_18dp);
         } else {
             mCallTypeImageView.setImageResource(R.drawable.ic_call_made_green_300_18dp);
         }
 
         //set call number
-        mCallNumberTextView.setText(b.getString("number"));
+        mCallNumberTextView.setText(number);
 
         //set call date
-        Date date = new Date(b.getLong("date"));
+        Date date = new Date(timestamp);
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d, HH:mm");
         String dateString = formatter.format(date);
         mCallDateTextView.setText(dateString);
@@ -92,7 +110,45 @@ public class AddNoteFragment extends BaseCallNoteFragment {
 
     @OnClick(R.id.add_note_save_button)
     public void saveButtonClicked() {
-        // TODO: 17-Jan-17 Call add_notes API
+
+        if (!getBaseCallNoteActivity().isNetworkConnected()) {
+            Toast.makeText(getBaseCallNoteActivity(), "Please connect to internet.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        getBaseCallNoteActivity().showProgressDialog("Saving note...");
+
+        String noteText = mNoteEditText.getText().toString();
+
+        if (noteText.isEmpty() || noteText.equals("")) {
+            Toast.makeText(getBaseCallNoteActivity(), "Note cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<ApiResponse<Note>> call = APIClient.getApiService().addNote(number, noteText, callType);
+        call.enqueue(new Callback<ApiResponse<Note>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Note>> call, Response<ApiResponse<Note>> response) {
+                if (response.isSuccessful()) {
+                    Note note = response.body().getData();
+                    Toast.makeText(getBaseCallNoteActivity(), "note saved with id " + note.getServerID(), Toast.LENGTH_SHORT).show();
+                    // TODO: 19-Jan-17 Add note to db.
+                    getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
+
+                    getBaseCallNoteActivity().dismissProgressDialog();
+                } else {
+                    Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
+                    getBaseCallNoteActivity().dismissProgressDialog();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Note>> call, Throwable t) {
+                Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
+                getBaseCallNoteActivity().dismissProgressDialog();
+            }
+        });
+
 
         Toast.makeText(getBaseCallNoteActivity(), "Saved", Toast.LENGTH_SHORT).show();
         getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());

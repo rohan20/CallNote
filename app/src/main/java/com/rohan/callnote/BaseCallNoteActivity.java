@@ -1,7 +1,9 @@
 package com.rohan.callnote;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -11,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.rohan.callnote.models.User;
 import com.rohan.callnote.network.APIClient;
 import com.rohan.callnote.network.response.ApiResponse;
 import com.rohan.callnote.utils.Constants;
+import com.rohan.callnote.utils.SharedPrefsUtil;
 import com.rohan.callnote.utils.UserUtil;
 
 import butterknife.BindView;
@@ -35,6 +37,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.rohan.callnote.utils.SharedPrefsUtil.USER_EMAIL;
 
 public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -61,7 +65,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
 
         signInProgressDialog = new ProgressDialog(this);
-        signInProgressDialog.setMessage("Signing in...");
         signInProgressDialog.setCancelable(false);
         signInProgressDialog.setCanceledOnTouchOutside(false);
     }
@@ -117,24 +120,23 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                         User user = response.body().getData();
                         UserUtil.saveUser(user);
                         switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
-                        dismissSignInProgressDialog();
+                        dismissProgressDialog();
                     } else {
                         Toast.makeText(BaseCallNoteActivity.this, "Failed to sign in. Please try later.", Toast.LENGTH_SHORT).show();
-                        dismissSignInProgressDialog();
+                        dismissProgressDialog();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-                    Log.i("sign up failed", t.getMessage());
                     Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
-                    dismissSignInProgressDialog();
+                    dismissProgressDialog();
                 }
             });
 
         } else {
             Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
-            dismissSignInProgressDialog();
+            dismissProgressDialog();
         }
     }
 
@@ -157,16 +159,37 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     }
 
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(SharedPrefsUtil.retrieveStringValue(USER_EMAIL, null))
+                .setMessage("Are you sure you want to sign out?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onResult(@NonNull Status status) {
-                        Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
-                        UserUtil.logout();
-                        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                                new ResultCallback<Status>() {
+                                    @Override
+                                    public void onResult(@NonNull Status status) {
+                                        Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
+                                        UserUtil.logout();
+                                        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
+                                    }
+                                }
+                        );
                     }
-                }
-        );
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
     }
 
     public boolean isNetworkConnected() {
@@ -227,11 +250,12 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
     }
 
-    public void showSignInProgressDialog() {
+    public void showProgressDialog(String message) {
+        signInProgressDialog.setMessage(message);
         signInProgressDialog.show();
     }
 
-    public void dismissSignInProgressDialog() {
+    public void dismissProgressDialog() {
         signInProgressDialog.dismiss();
     }
 
