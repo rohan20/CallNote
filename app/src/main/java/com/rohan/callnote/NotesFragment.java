@@ -37,12 +37,14 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
         View v = inflater.inflate(R.layout.fragment_notes, container, false);
         ButterKnife.bind(this, v);
 
+        getBaseCallNoteActivity().getSupportActionBar().show();
+
         mAddCallFAB.setOnClickListener(this);
 
-        Bundle b = getArguments();
-        if (b != null && b.getString("email") != null) {
-            testTextView.setText(b.getString("email"));
-        }
+//        Bundle b = getArguments();
+//        if (b != null && b.getString("email") != null) {
+//            testTextView.setText(b.getString("email"));
+//        }
 
         return v;
     }

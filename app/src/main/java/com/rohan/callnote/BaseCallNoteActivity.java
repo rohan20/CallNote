@@ -1,13 +1,17 @@
 package com.rohan.callnote;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -17,27 +21,36 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.rohan.callnote.models.User;
+import com.rohan.callnote.network.APIClient;
+import com.rohan.callnote.network.response.ApiResponse;
+import com.rohan.callnote.utils.Constants;
+import com.rohan.callnote.utils.UserUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
-
-    private static int GOOGLE_SIGN_IN = 1;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
     GoogleApiClient mGoogleApiClient;
+    private static BaseCallNoteActivity instance;
+    private ProgressDialog signInProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        instance = this;
 
         ButterKnife.bind(this);
 
@@ -45,8 +58,23 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
+
+        signInProgressDialog = new ProgressDialog(this);
+        signInProgressDialog.setMessage("Signing in...");
+        signInProgressDialog.setCancelable(false);
+        signInProgressDialog.setCanceledOnTouchOutside(false);
+    }
+
+    public static BaseCallNoteActivity getInstance() {
+        return instance;
+    }
+
+    public void signIn() {
+
         GoogleSignInOptions googleSignInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.server_client_id))
                         .requestEmail()
                         .build();
 
@@ -55,12 +83,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
 
-        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
-    }
-
-    public void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
+        startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
     }
 
     @Override
@@ -68,25 +92,49 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == GOOGLE_SIGN_IN) {
+        if (requestCode == Constants.GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
 
+        if (result.isSuccess()) {
             Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+
             GoogleSignInAccount acct = result.getSignInAccount();
 
-            Bundle bundle = new Bundle();
-            if (acct != null)
-                bundle.putString("email", acct.getEmail());
-            switchFragment(new NotesFragment(), false, bundle, NotesFragment.class.getSimpleName());
+            String name = acct.getDisplayName();
+            String email = acct.getEmail();
+            String token = acct.getIdToken();
+
+            Call<ApiResponse<User>> call = APIClient.getApiService().signUp(name, email, token);
+            call.enqueue(new Callback<ApiResponse<User>>() {
+                @Override
+                public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                    if (response.isSuccessful()) {
+                        User user = response.body().getData();
+                        UserUtil.saveUser(user);
+                        switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
+                        dismissSignInProgressDialog();
+                    } else {
+                        Toast.makeText(BaseCallNoteActivity.this, "Failed to sign in. Please try later.", Toast.LENGTH_SHORT).show();
+                        dismissSignInProgressDialog();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                    Log.i("sign up failed", t.getMessage());
+                    Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
+                    dismissSignInProgressDialog();
+                }
+            });
 
         } else {
-            Toast.makeText(this, "failed error code: " + result.getStatus().getStatusMessage() + "\n" + result.getStatus().getStatusCode(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
+            dismissSignInProgressDialog();
         }
     }
 
@@ -114,10 +162,16 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                     @Override
                     public void onResult(@NonNull Status status) {
                         Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
+                        UserUtil.logout();
                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
                     }
                 }
         );
+    }
+
+    public boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 
     /**
@@ -171,6 +225,14 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         }
         fragmentTransaction.replace(R.id.containerView, fragment, tag).commit();
 
+    }
+
+    public void showSignInProgressDialog() {
+        signInProgressDialog.show();
+    }
+
+    public void dismissSignInProgressDialog() {
+        signInProgressDialog.dismiss();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.rohan.callnote;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,12 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rohan.callnote.adapters.RecyclerViewAdapterCallLog;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +44,6 @@ public class CallLogFragment extends BaseCallNoteFragment {
         CallsProvider callsProvider = new CallsProvider(getBaseCallNoteActivity());
         callsList = callsProvider.getCalls().getList();
         Collections.reverse(callsList);
-        Toast.makeText(getBaseCallNoteActivity(), "CallList size = " + callsList.size(), Toast.LENGTH_SHORT).show();
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getBaseCallNoteActivity(), LinearLayoutManager.VERTICAL, false);
         RecyclerViewAdapterCallLog mAdapterCallLog = new RecyclerViewAdapterCallLog(getBaseCallNoteActivity());
@@ -56,18 +51,7 @@ public class CallLogFragment extends BaseCallNoteFragment {
         mCallLogRecyclerView.setLayoutManager(mLinearLayoutManager);
         mAdapterCallLog.setRecyclerViewCallLogList(callsList);
 
-//        setUpRecyclerView();
         return v;
-    }
-
-    private void setUpRecyclerView() {
-
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getBaseCallNoteActivity(), LinearLayoutManager.VERTICAL, false);
-        RecyclerViewAdapterCallLog mAdapterCallLog = new RecyclerViewAdapterCallLog(getBaseCallNoteActivity());
-        mCallLogRecyclerView.setAdapter(mAdapterCallLog);
-        mCallLogRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mAdapterCallLog.setRecyclerViewCallLogList(callsList);
-
     }
 
 }
