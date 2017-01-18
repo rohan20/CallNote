@@ -9,11 +9,16 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.UserUtil;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.everything.providers.android.calllog.Call;
+import me.everything.providers.android.calllog.CallsProvider;
 
 
 /**
@@ -60,7 +65,26 @@ public class LoginFragment extends BaseCallNoteFragment {
     }
 
     private void skipLogin() {
-        getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
+        Bundle b = getArguments();
+
+        if (b != null && b.getBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL)) {
+
+            CallsProvider callsProvider = new CallsProvider(getBaseCallNoteActivity());
+            List<Call> callsList = callsProvider.getCalls().getList();
+
+            Call call = callsList.get(callsList.size() - 1);
+
+            Bundle bundle = new Bundle();
+            bundle.putString("name", call.name);
+            bundle.putString("number", call.number);
+            bundle.putInt("callType", getBaseCallNoteActivity().getCallType(call.type));
+            bundle.putLong("date", call.callDate);
+            bundle.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, true);
+
+            getBaseCallNoteActivity().switchFragment(new AddNoteFragment(), false, bundle, AddNoteFragment.class.getSimpleName());
+        } else {
+            getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
+        }
     }
 
 }

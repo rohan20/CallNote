@@ -55,6 +55,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
     String number;
     int callType;
     long timestamp;
+    boolean directlyFromCall = false;
 
     public AddNoteFragment() {
         // Required empty public constructor
@@ -78,6 +79,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
             number = b.getString("number");
             callType = b.getInt("callType");
             timestamp = b.getLong("date");
+            directlyFromCall = b.getBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL);
         }
 
         //set caller name
@@ -87,7 +89,6 @@ public class AddNoteFragment extends BaseCallNoteFragment {
             mCallNameTextView.setText(name);
         }
 
-        //set call type (0: Missed, 1: Received, 2: Dialed)
         if (callType == Constants.CALL_MISSED) {
             mCallTypeImageView.setImageResource(R.drawable.ic_call_missed_red_300_18dp);
         } else if (callType == Constants.CALL_RECEIVED) {
@@ -131,7 +132,6 @@ public class AddNoteFragment extends BaseCallNoteFragment {
             public void onResponse(Call<ApiResponse<Note>> call, Response<ApiResponse<Note>> response) {
                 if (response.isSuccessful()) {
                     Note note = response.body().getData();
-                    Toast.makeText(getBaseCallNoteActivity(), "note saved with id " + note.getServerID(), Toast.LENGTH_SHORT).show();
                     // TODO: 19-Jan-17 Add note to db.
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
 
@@ -149,14 +149,17 @@ public class AddNoteFragment extends BaseCallNoteFragment {
             }
         });
 
-
-        Toast.makeText(getBaseCallNoteActivity(), "Saved", Toast.LENGTH_SHORT).show();
         getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
     }
 
     @OnClick(R.id.add_note_cancel_button)
     public void cancelButtonClicked() {
-        Toast.makeText(getBaseCallNoteActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+
+        if (directlyFromCall) {
+            getBaseCallNoteActivity().finish();
+            return;
+        }
+
         getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
     }
 }

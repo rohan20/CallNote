@@ -49,12 +49,15 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     private static BaseCallNoteActivity instance;
     private ProgressDialog signInProgressDialog;
 
+    CallStateReceiver callStateReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
         instance = this;
+        callStateReceiver = new CallStateReceiver();
 
         ButterKnife.bind(this);
 
@@ -62,11 +65,26 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
-
         signInProgressDialog = new ProgressDialog(this);
-        signInProgressDialog.setCancelable(false);
+        signInProgressDialog.setCancelable(true);
         signInProgressDialog.setCanceledOnTouchOutside(false);
+
+        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+        Bundle b = new Bundle();
+        b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false);
+
+        if (getIntent() != null && getIntent().getBooleanExtra(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false)) {
+            //directly go to add note fragment
+            b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, true);
+            switchFragment(new LoginFragment(), false, b, LoginFragment.class.getSimpleName());
+        }
     }
 
     public static BaseCallNoteActivity getInstance() {
@@ -74,6 +92,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     }
 
     public void signIn() {
+
+//        registerReceiver(callStateReceiver, new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED));
 
         GoogleSignInOptions googleSignInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -104,7 +124,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     private void handleSignInResult(GoogleSignInResult result) {
 
         if (result.isSuccess()) {
-            Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
 
             GoogleSignInAccount acct = result.getSignInAccount();
 
@@ -174,6 +193,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                                         Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
                                         UserUtil.logout();
                                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
+//                                        unregisterReceiver(callStateReceiver);
                                     }
                                 }
                         );
@@ -262,5 +282,14 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    public int getCallType(me.everything.providers.android.calllog.Call.CallType callType) {
+        if (callType.equals(me.everything.providers.android.calllog.Call.CallType.MISSED))
+            return Constants.CALL_MISSED;
+        else if (callType.equals(me.everything.providers.android.calllog.Call.CallType.INCOMING))
+            return Constants.CALL_RECEIVED;
+        else
+            return Constants.CALL_DIALED;
     }
 }

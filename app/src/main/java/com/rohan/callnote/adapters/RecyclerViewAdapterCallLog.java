@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.rohan.callnote.AddNoteFragment;
 import com.rohan.callnote.BaseCallNoteActivity;
 import com.rohan.callnote.R;
+import com.rohan.callnote.utils.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,17 +64,13 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
             holder.mCallNameTextView.setText(call.name);
         }
 
-        final int callType;
-
         //set call type
-        if (call.type.equals(Call.CallType.MISSED)) {
-            callType = 0;
+        final int callType = ((BaseCallNoteActivity) mContext).getCallType(call.type);
+        if (callType == Constants.CALL_MISSED) {
             holder.mCallTypeImageView.setImageResource(R.drawable.ic_call_missed_red_300_18dp);
-        } else if (call.type.equals(Call.CallType.INCOMING)) {
-            callType = 1;
+        } else if (callType == Constants.CALL_RECEIVED) {
             holder.mCallTypeImageView.setImageResource(R.drawable.ic_call_received_blue_300_18dp);
         } else {
-            callType = 2;
             holder.mCallTypeImageView.setImageResource(R.drawable.ic_call_made_green_300_18dp);
         }
 

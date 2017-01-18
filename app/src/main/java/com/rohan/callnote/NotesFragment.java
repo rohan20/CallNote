@@ -18,6 +18,8 @@ import com.rohan.callnote.adapters.RecyclerViewAdapterNotes;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.network.APIClient;
 import com.rohan.callnote.network.response.ApiResponse;
+import com.rohan.callnote.utils.Constants;
+import com.rohan.callnote.utils.SharedPrefsUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +59,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
         getBaseCallNoteActivity().getSupportActionBar().show();
         mAddCallFAB.setOnClickListener(this);
 
+        Toast.makeText(getBaseCallNoteActivity(), "Logged in as " + SharedPrefsUtil.retrieveStringValue(SharedPrefsUtil.USER_EMAIL, null), Toast.LENGTH_SHORT).show();
+
         StaggeredGridLayoutManager mStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAdapterNotes = new RecyclerViewAdapterNotes(getBaseCallNoteActivity());
         mNotesRecyclerView.setAdapter(mAdapterNotes);
@@ -88,6 +92,9 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     List<Note> notesList = response.body().getData();
                     Collections.reverse(notesList);
                     mAdapterNotes.setRecyclerViewNotesList(notesList);
+
+                    if (notesList.size() == 0)
+                        getBaseCallNoteActivity().dismissProgressDialog();
 
                 } else {
                     Toast.makeText(getBaseCallNoteActivity(), "Unable to fetch latest notes right now. Please try later.", Toast.LENGTH_SHORT).show();
