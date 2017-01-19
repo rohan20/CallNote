@@ -135,6 +135,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
                 if (response.isSuccessful()) {
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                     getBaseCallNoteActivity().dismissProgressDialog();
+                    getBaseCallNoteActivity().updateWidget();
                 } else {
                     Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());

@@ -2,6 +2,8 @@ package com.rohan.callnote;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +35,7 @@ import com.rohan.callnote.network.APIResponse;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.SharedPrefsUtil;
 import com.rohan.callnote.utils.UserUtil;
+import com.rohan.callnote.widget.CallNoteWidget;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,15 +54,12 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     private static BaseCallNoteActivity instance;
     private ProgressDialog signInProgressDialog;
 
-    CallStateReceiver callStateReceiver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
         instance = this;
-        callStateReceiver = new CallStateReceiver();
 
         ButterKnife.bind(this);
 
@@ -94,8 +94,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     }
 
     public void signIn() {
-
-//        registerReceiver(callStateReceiver, new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED));
 
         GoogleSignInOptions googleSignInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -195,7 +193,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                                         Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
                                         UserUtil.logout();
                                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
-//                                        unregisterReceiver(callStateReceiver);
+
                                     }
                                 }
                         );
@@ -293,5 +291,14 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             return Constants.CALL_RECEIVED;
         else
             return Constants.CALL_DIALED;
+    }
+
+    public void updateWidget() {
+        ComponentName name = new ComponentName(this, CallNoteWidget.class);
+        int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
+        Intent intent = new Intent(this, CallNoteWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
     }
 }

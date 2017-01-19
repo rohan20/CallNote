@@ -70,7 +70,7 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
 
         //set call type
         if (Integer.parseInt(note.getCallType()) == Constants.CALL_MISSED) {
-            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#ff4c4c"));
+            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#FFB6C1"));
         } else if (Integer.parseInt(note.getCallType()) == Constants.CALL_RECEIVED) {
             holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#81d8d0"));
         } else {

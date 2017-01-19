@@ -1,7 +1,10 @@
 package com.rohan.callnote.fragments;
 
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +32,7 @@ import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.Contract.NotesEntry;
 import com.rohan.callnote.utils.DBUtils;
 import com.rohan.callnote.utils.SharedPrefsUtil;
+import com.rohan.callnote.widget.CallNoteWidget;
 
 import java.util.Collections;
 import java.util.List;
@@ -102,6 +106,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                         .COLUMN_SERVER_ID));
 
                 deleteNoteFromAPI(serverIDToBeDeleted);
+
+                getBaseCallNoteActivity().updateWidget();
             }
         }).attachToRecyclerView(mNotesRecyclerView);
 
@@ -171,6 +177,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                         getBaseCallNoteActivity().getApplicationContext().getContentResolver().bulkInsert(
                                 NotesEntry.CONTENT_URI, cvArray);
                     }
+
+                    getBaseCallNoteActivity().updateWidget();
 
                     if (getLoaderManager().hasRunningLoaders())
                         getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
@@ -243,4 +251,5 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapterNotes.swapCursor(null);
     }
+
 }

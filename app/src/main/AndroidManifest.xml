@@ -36,6 +36,19 @@
             android:exported="false"
             android:syncable="true" />
 
+        <receiver android:name=".widget.CallNoteWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/callnote_widget_info" />
+        </receiver>
+
+        <service android:name=".widget.CallNoteWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>
