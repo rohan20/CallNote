@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rohan.callnote.BaseCallNoteActivity;
 import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
@@ -98,6 +100,16 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
                         .setPositiveButton("Call", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf
+                                        (note.getServerID()));
+                                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, note.getNumber());
+                                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Call");
+                                ((BaseCallNoteActivity) mContext).mFirebaseAnalytics.logEvent
+                                        (FirebaseAnalytics.Event
+                                                .SELECT_CONTENT, bundle);
+
                                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                                 mContext.startActivity(intent);
                             }
@@ -105,6 +117,18 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
                         .setNegativeButton("SMS", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf
+                                        (note.getServerID()));
+                                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, note.getNumber());
+                                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "SMS");
+                                ((BaseCallNoteActivity) mContext).mFirebaseAnalytics.logEvent
+                                        (FirebaseAnalytics.Event
+                                                .SELECT_CONTENT, bundle);
+
+
                                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", phone, null)));
                             }
                         })

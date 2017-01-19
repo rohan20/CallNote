@@ -27,6 +27,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rohan.callnote.fragments.LoginFragment;
 import com.rohan.callnote.fragments.NotesFragment;
 import com.rohan.callnote.models.User;
@@ -54,12 +55,17 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     private static BaseCallNoteActivity instance;
     private ProgressDialog signInProgressDialog;
 
+    public FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
         instance = this;
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         ButterKnife.bind(this);
 
@@ -186,14 +192,15 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
                         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                                 new ResultCallback<Status>() {
                                     @Override
                                     public void onResult(@NonNull Status status) {
                                         Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
                                         UserUtil.logout();
-                                        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
 
+                                        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
                                     }
                                 }
                         );
