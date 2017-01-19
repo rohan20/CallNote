@@ -28,11 +28,11 @@ public class Contract {
         public static final String COLUMN_SERVER_ID = "server_id";
         public static final String COLUMN_NUMBER = "number";
         public static final String COLUMN_NOTE_TEXT = "note_text";
-        public static final String COLUMN_TIMESTAMP = "timestamp";
         public static final String COLUMN_CALL_TYPE = "call_type";
-        public static final String COLUMN_URL = "url";
+        public static final String COLUMN_TIMESTAMP = "timestamp";
+//        public static final String COLUMN_CURRENT_USER_EMAIL = "current_user_email";
 
-        public static Uri buildNewsUri(long id) {
+        public static Uri buildNotesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 

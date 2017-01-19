@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.rohan.callnote.AddNoteFragment;
 import com.rohan.callnote.BaseCallNoteActivity;
 import com.rohan.callnote.R;
+import com.rohan.callnote.fragments.AddNoteFragment;
 import com.rohan.callnote.utils.Constants;
 
 import java.text.SimpleDateFormat;

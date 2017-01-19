@@ -1,4 +1,4 @@
-package com.rohan.callnote.network.response;
+package com.rohan.callnote.network;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Rohan on 17-Jan-17.
  */
 
-public class ApiResponse<T> {
+public class APIResponse<T> {
 
     @SerializedName("data")
     private T data;

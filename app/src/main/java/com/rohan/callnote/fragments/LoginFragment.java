@@ -1,4 +1,4 @@
-package com.rohan.callnote;
+package com.rohan.callnote.fragments;
 
 
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.rohan.callnote.BaseCallNoteFragment;
+import com.rohan.callnote.R;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.UserUtil;
 
@@ -61,6 +63,7 @@ public class LoginFragment extends BaseCallNoteFragment {
             getBaseCallNoteActivity().signIn();
         } else {
             Toast.makeText(getBaseCallNoteActivity(), "Please connect to internet.", Toast.LENGTH_LONG).show();
+            getBaseCallNoteActivity().dismissProgressDialog();
         }
     }
 

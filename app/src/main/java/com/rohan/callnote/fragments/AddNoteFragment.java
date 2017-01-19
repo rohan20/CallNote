@@ -1,4 +1,4 @@
-package com.rohan.callnote;
+package com.rohan.callnote.fragments;
 
 
 import android.content.Context;
@@ -14,9 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.callnote.BaseCallNoteFragment;
+import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.network.APIClient;
-import com.rohan.callnote.network.response.ApiResponse;
+import com.rohan.callnote.network.APIResponse;
 import com.rohan.callnote.utils.Constants;
 
 import java.text.SimpleDateFormat;
@@ -126,30 +128,29 @@ public class AddNoteFragment extends BaseCallNoteFragment {
             return;
         }
 
-        Call<ApiResponse<Note>> call = APIClient.getApiService().addNote(number, noteText, callType);
-        call.enqueue(new Callback<ApiResponse<Note>>() {
+        Call<APIResponse<Note>> call = APIClient.getApiService().addNote(number, noteText, callType);
+        call.enqueue(new Callback<APIResponse<Note>>() {
             @Override
-            public void onResponse(Call<ApiResponse<Note>> call, Response<ApiResponse<Note>> response) {
+            public void onResponse(Call<APIResponse<Note>> call, Response<APIResponse<Note>> response) {
                 if (response.isSuccessful()) {
-                    Note note = response.body().getData();
-                    // TODO: 19-Jan-17 Add note to db.
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
-
                     getBaseCallNoteActivity().dismissProgressDialog();
                 } else {
                     Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
+                    getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
                     getBaseCallNoteActivity().dismissProgressDialog();
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<Note>> call, Throwable t) {
+            public void onFailure(Call<APIResponse<Note>> call, Throwable t) {
                 Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
                 getBaseCallNoteActivity().dismissProgressDialog();
+
+                getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
             }
         });
 
-        getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
     }
 
     @OnClick(R.id.add_note_cancel_button)

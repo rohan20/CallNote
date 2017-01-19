@@ -1,4 +1,4 @@
-package com.rohan.callnote;
+package com.rohan.callnote.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rohan.callnote.BaseCallNoteFragment;
+import com.rohan.callnote.R;
 import com.rohan.callnote.adapters.RecyclerViewAdapterCallLog;
 
 import java.util.Collections;

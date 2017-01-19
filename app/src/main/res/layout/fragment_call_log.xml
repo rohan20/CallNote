@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rohan.callnote.CallLogFragment">
+    tools:context="com.rohan.callnote.fragments.CallLogFragment">
 
     <TextView
         android:id="@+id/select_call_text_view"

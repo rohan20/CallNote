@@ -13,7 +13,7 @@ public class Note {
     @SerializedName("contact")
     private String number;
     @SerializedName("text")
-    private String text;
+    private String noteText;
     @SerializedName("note_type")
     private String callType;
     @SerializedName("timestamp")
@@ -27,8 +27,8 @@ public class Note {
         return number;
     }
 
-    public String getText() {
-        return text;
+    public String getNoteText() {
+        return noteText;
     }
 
     public String getCallType() {
@@ -37,5 +37,25 @@ public class Note {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public void setServerID(int serverID) {
+        this.serverID = serverID;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setNoteText(String noteText) {
+        this.noteText = noteText;
+    }
+
+    public void setCallType(String callType) {
+        this.callType = callType;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }

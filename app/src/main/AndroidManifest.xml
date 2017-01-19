@@ -30,6 +30,12 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name=".utils.CallNoteContentProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"
+            android:syncable="true" />
+
     </application>
 
 </manifest>

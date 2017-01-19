@@ -25,9 +25,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.rohan.callnote.fragments.LoginFragment;
+import com.rohan.callnote.fragments.NotesFragment;
 import com.rohan.callnote.models.User;
 import com.rohan.callnote.network.APIClient;
-import com.rohan.callnote.network.response.ApiResponse;
+import com.rohan.callnote.network.APIResponse;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.SharedPrefsUtil;
 import com.rohan.callnote.utils.UserUtil;
@@ -131,10 +133,10 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             String email = acct.getEmail();
             String token = acct.getIdToken();
 
-            Call<ApiResponse<User>> call = APIClient.getApiService().signUp(name, email, token);
-            call.enqueue(new Callback<ApiResponse<User>>() {
+            Call<APIResponse<User>> call = APIClient.getApiService().signUp(name, email, token);
+            call.enqueue(new Callback<APIResponse<User>>() {
                 @Override
-                public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                public void onResponse(Call<APIResponse<User>> call, Response<APIResponse<User>> response) {
                     if (response.isSuccessful()) {
                         User user = response.body().getData();
                         UserUtil.saveUser(user);
@@ -147,7 +149,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 }
 
                 @Override
-                public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                public void onFailure(Call<APIResponse<User>> call, Throwable t) {
                     Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
                     dismissProgressDialog();
                 }

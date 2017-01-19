@@ -1,11 +1,12 @@
 package com.rohan.callnote.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,52 +19,36 @@ import com.rohan.callnote.BaseCallNoteActivity;
 import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.utils.Constants;
+import com.rohan.callnote.utils.CursorRecyclerViewAdapter;
+import com.rohan.callnote.utils.DBUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.everything.providers.android.calllog.Call;
 import me.everything.providers.android.calllog.CallsProvider;
-import me.everything.providers.android.contacts.Contact;
-import me.everything.providers.android.contacts.ContactsProvider;
+import okhttp3.internal.Util;
 
 /**
- * Created by Rohan on 17-Jan-17.
+ * Created by Rohan on 19-Jan-17.
  */
 
-public class RecyclerViewAdapterNotes extends RecyclerView.Adapter<RecyclerViewAdapterNotes.ViewHolder> {
+public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAdapter
+        .ViewHolder> {
 
-    Context mContext;
-    List<Note> mNotesList;
+    private Context mContext;
 
-    public RecyclerViewAdapterNotes(Context context) {
+    public NotesCursorAdapter(Context context, Cursor cursor) {
+        super(context, cursor);
         mContext = context;
-        mNotesList = new ArrayList<>();
-    }
-
-    public void setRecyclerViewNotesList(List<Note> notesList) {
-        mNotesList = notesList;
-        notifyDataSetChanged();
     }
 
     @Override
-    public RecyclerViewAdapterNotes.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public void onBindViewHolder(NotesCursorAdapter.ViewHolder holder, Cursor cursor) {
 
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.item_note, parent, false);
-
-        return new ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerViewAdapterNotes.ViewHolder holder, int position) {
-
-        final Note note = mNotesList.get(position);
+        final Note note = DBUtils.getNoteFromCursor(cursor);
 
         //set contact name
         boolean contactIsUnknown = true;
@@ -85,7 +70,7 @@ public class RecyclerViewAdapterNotes extends RecyclerView.Adapter<RecyclerViewA
 
         //set call type
         if (Integer.parseInt(note.getCallType()) == Constants.CALL_MISSED) {
-            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#FD6140"));
+            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#ff4c4c"));
         } else if (Integer.parseInt(note.getCallType()) == Constants.CALL_RECEIVED) {
             holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#81d8d0"));
         } else {
@@ -93,7 +78,7 @@ public class RecyclerViewAdapterNotes extends RecyclerView.Adapter<RecyclerViewA
         }
 
         //set note text
-        holder.mCallNoteTextTextView.setText(note.getText());
+        holder.mCallNoteTextTextView.setText(note.getNoteText());
 
         //set note time
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d, HH:mm");
@@ -136,17 +121,21 @@ public class RecyclerViewAdapterNotes extends RecyclerView.Adapter<RecyclerViewA
             }
         });
 
-        if (position == mNotesList.size() - 1)
+        if (cursor.getPosition() == cursor.getCount() - 1)
             ((BaseCallNoteActivity) mContext).dismissProgressDialog();
 
     }
 
     @Override
-    public int getItemCount() {
-        return mNotesList.size();
+    public NotesCursorAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.item_note, parent, false);
+
+        return new ViewHolder(v);
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.note_item_card_view)
         CardView mNoteCard;
@@ -167,7 +156,6 @@ public class RecyclerViewAdapterNotes extends RecyclerView.Adapter<RecyclerViewA
 
             ButterKnife.bind(this, itemView);
         }
-
-
     }
+
 }

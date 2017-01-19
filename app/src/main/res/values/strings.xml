@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Call Note</string>
+    <string name="content_authority">com.rohan.callnote</string>
+
     <!-- TODO (user): replace with your real server client ID -->
     <string name="server_client_id">YOUR_CLIENT_ID</string>
+    <string name="no_notes_added">You haven\'t added notes yet. Click on the \'+\' button to add a note.</string>
 </resources>

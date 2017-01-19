@@ -15,4 +15,6 @@ public class Constants {
     public static final int CALL_RECEIVED = 1;
     public static final int CALL_DIALED = 2;
 
+    public static final int NOTES_CURSOR_LOADER_ID = 3;
+
 }
