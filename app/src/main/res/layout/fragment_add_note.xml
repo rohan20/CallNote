@@ -16,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="Rohan"
             android:textSize="18sp" />
 
         <LinearLayout
@@ -31,7 +30,9 @@
                 android:id="@+id/add_note_call_type_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/call_type"
                 android:paddingEnd="5dp"
+                android:paddingStart="0dp"
                 android:src="@drawable/ic_call_made_green_300_18dp" />
 
             <TextView
@@ -39,15 +40,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="10dp"
-                android:text="+91 9891417273"
+                android:paddingStart="0dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/add_note_call_date_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Mon, 24 Jan, 23:13" />
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -65,7 +65,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="4dp"
                 android:background="#f5f5f5"
-                android:text="Save"
+                android:text="@string/save"
                 android:textAllCaps="false" />
 
             <Button
@@ -75,7 +75,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_toStartOf="@id/add_note_save_button"
                 android:background="#f5f5f5"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textAllCaps="false" />
 
         </RelativeLayout>
@@ -91,11 +91,14 @@
             android:background="#f5f5f5"
             android:fontFamily="serif"
             android:gravity="start"
+            android:hint="@string/note_hint"
+            android:labelFor="@string/edit_text_talk_back"
             android:paddingBottom="4dp"
             android:paddingEnd="4dp"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="LabelFor" />
 
     </RelativeLayout>
 

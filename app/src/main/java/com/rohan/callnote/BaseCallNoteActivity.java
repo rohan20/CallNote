@@ -31,8 +31,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rohan.callnote.fragments.LoginFragment;
 import com.rohan.callnote.fragments.NotesFragment;
 import com.rohan.callnote.models.User;
-import com.rohan.callnote.network.APIClient;
-import com.rohan.callnote.network.APIResponse;
+import com.rohan.callnote.network.ApiClient;
+import com.rohan.callnote.network.ApiResponse;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.SharedPrefsUtil;
 import com.rohan.callnote.utils.UserUtil;
@@ -138,30 +138,33 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             String email = acct.getEmail();
             String token = acct.getIdToken();
 
-            Call<APIResponse<User>> call = APIClient.getApiService().signUp(name, email, token);
-            call.enqueue(new Callback<APIResponse<User>>() {
+            Call<ApiResponse<User>> call = ApiClient.getApiService().signUp(name, email, token);
+            call.enqueue(new Callback<ApiResponse<User>>() {
                 @Override
-                public void onResponse(Call<APIResponse<User>> call, Response<APIResponse<User>> response) {
+                public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                     if (response.isSuccessful()) {
                         User user = response.body().getData();
                         UserUtil.saveUser(user);
                         switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                         dismissProgressDialog();
                     } else {
-                        Toast.makeText(BaseCallNoteActivity.this, "Failed to sign in. Please try later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BaseCallNoteActivity.this, getString(R.string
+                                .failed_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                         dismissProgressDialog();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<APIResponse<User>> call, Throwable t) {
-                    Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                    Toast.makeText(BaseCallNoteActivity.this, getString(R.string
+                            .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                     dismissProgressDialog();
                 }
             });
 
         } else {
-            Toast.makeText(BaseCallNoteActivity.this, "Unable to sign in right now. Please try later.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(BaseCallNoteActivity.this, getString(R.string
+                    .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
             dismissProgressDialog();
         }
     }
@@ -188,9 +191,9 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(SharedPrefsUtil.retrieveStringValue(USER_EMAIL, null))
-                .setMessage("Are you sure you want to sign out?")
+                .setMessage(getString(R.string.sign_out_confirmation))
                 .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -198,7 +201,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                                 new ResultCallback<Status>() {
                                     @Override
                                     public void onResult(@NonNull Status status) {
-                                        Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BaseCallNoteActivity.this, getString(R.string
+                                                .signed_out), Toast.LENGTH_SHORT).show();
                                         UserUtil.logout();
                                         stopGoogleApiClient();
                                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
@@ -207,7 +211,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                         );
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel_string), new DialogInterface
+                        .OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -294,7 +299,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
+
     }
 
     public int getCallType(me.everything.providers.android.calllog.Call.CallType callType) {

@@ -1,15 +1,16 @@
 package com.rohan.callnote.fragments;
 
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
@@ -23,16 +24,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rohan.callnote.BaseCallNoteFragment;
+import com.rohan.callnote.Manifest;
 import com.rohan.callnote.R;
 import com.rohan.callnote.adapters.NotesCursorAdapter;
 import com.rohan.callnote.models.Note;
-import com.rohan.callnote.network.APIClient;
-import com.rohan.callnote.network.APIResponse;
+import com.rohan.callnote.network.ApiClient;
+import com.rohan.callnote.network.ApiResponse;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.Contract.NotesEntry;
 import com.rohan.callnote.utils.DBUtils;
 import com.rohan.callnote.utils.SharedPrefsUtil;
-import com.rohan.callnote.widget.CallNoteWidget;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,8 +80,6 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
         getBaseCallNoteActivity().getSupportActionBar().show();
         mAddCallFAB.setOnClickListener(this);
 
-        Toast.makeText(getBaseCallNoteActivity(), "Logged in as " + SharedPrefsUtil.retrieveStringValue(SharedPrefsUtil.USER_EMAIL, null), Toast.LENGTH_SHORT).show();
-
         mAdapterNotes = new NotesCursorAdapter(getBaseCallNoteActivity(), null);
         mNotesRecyclerView.setAdapter(mAdapterNotes);
         mNotesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -116,15 +115,16 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
     private void deleteNoteFromAPI(final int id) {
         if (!getBaseCallNoteActivity().isNetworkConnected()) {
-            Toast.makeText(getBaseCallNoteActivity(), "Please connect to the internet and try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
 
-        Call<APIResponse> call = APIClient.getApiService().deleteNote(String.valueOf(id));
+        Call<ApiResponse> call = ApiClient.getApiService().deleteNote(String.valueOf(id));
 
-        call.enqueue(new Callback<APIResponse>() {
+        call.enqueue(new Callback<ApiResponse>() {
             @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful()) {
                     String selection = NotesEntry.COLUMN_SERVER_ID + " =? ";
                     String[] selectionArgs = {String.valueOf(id)};
@@ -133,15 +133,15 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                             selection, selectionArgs);
 
                 } else {
-                    Toast.makeText(getBaseCallNoteActivity(), "Unable to delete note right " +
-                            "now. Please try later.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string
+                            .unable_to_delete_note), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
-                Toast.makeText(getBaseCallNoteActivity(), "Unable to delete note right " +
-                        "now. Please try later.", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Toast.makeText(getBaseCallNoteActivity(), getString(R.string.unable_to_delete_note),
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -149,15 +149,16 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     private void fetchNotesFromAPI() {
 
         if (!getBaseCallNoteActivity().isNetworkConnected()) {
-            Toast.makeText(getBaseCallNoteActivity(), "Please connect to the internet and try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
 
-        Call<APIResponse<List<Note>>> call = APIClient.getApiService().getNotes();
+        Call<ApiResponse<List<Note>>> call = ApiClient.getApiService().getNotes();
 
-        call.enqueue(new Callback<APIResponse<List<Note>>>() {
+        call.enqueue(new Callback<ApiResponse<List<Note>>>() {
             @Override
-            public void onResponse(Call<APIResponse<List<Note>>> call, Response<APIResponse<List<Note>>> response) {
+            public void onResponse(Call<ApiResponse<List<Note>>> call, Response<ApiResponse<List<Note>>> response) {
                 if (response.isSuccessful()) {
 
                     List<Note> notesList = response.body().getData();
@@ -189,14 +190,16 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
 
                 } else {
-                    Toast.makeText(getBaseCallNoteActivity(), "Unable to fetch latest notes right now. Please try later.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string
+                            .unable_to_fetch_notes), Toast.LENGTH_SHORT).show();
                     getBaseCallNoteActivity().dismissProgressDialog();
                 }
             }
 
             @Override
-            public void onFailure(Call<APIResponse<List<Note>>> call, Throwable t) {
-                Toast.makeText(getBaseCallNoteActivity(), "Unable to fetch latest notes right now. Please try later.", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ApiResponse<List<Note>>> call, Throwable t) {
+                Toast.makeText(getBaseCallNoteActivity(), getString(R.string
+                        .unable_to_fetch_notes), Toast.LENGTH_SHORT).show();
                 getBaseCallNoteActivity().dismissProgressDialog();
             }
         });
@@ -207,10 +210,66 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_call_fab:
-                getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
-                break;
+
+                if (ContextCompat.checkSelfPermission(getBaseCallNoteActivity(),
+                        android.Manifest.permission.READ_CALL_LOG)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getBaseCallNoteActivity(),
+                            android.Manifest.permission.READ_CALL_LOG)) {
+
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+
+                    } else {
+
+                        // No explanation needed, we can request the permission.
+
+                        ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
+                                new String[]{android.Manifest.permission.READ_CALL_LOG},
+                                Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG);
+
+                        // MY_PERMISSIONS_REQUEST_READ_CALL_LOG is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+                        break;
+                    }
+                } else {
+                    getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
+                    break;
+                }
+
 
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
+                    break;
+
+                } else {
+
+                    Toast.makeText(getBaseCallNoteActivity(),
+                            getString(R.string.permission_required_call_log), Toast.LENGTH_SHORT)
+                            .show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+
     }
 
     @Override

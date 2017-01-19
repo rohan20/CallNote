@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'callnote_alias'
+            keyPassword 'callnote'
+            storeFile file('$rootdir/callnote_keystore.jks')
+            storePassword 'callnote'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -15,17 +23,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.google.android.gms:play-services-auth:10.0.1'

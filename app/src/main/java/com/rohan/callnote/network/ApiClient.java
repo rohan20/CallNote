@@ -1,6 +1,5 @@
 package com.rohan.callnote.network;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.SharedPrefsUtil;
@@ -20,9 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Rohan on 17-Jan-17.
  */
 
-public class APIClient {
+public class ApiClient {
 
-    private static APIService apiService;
+    private static ApiService apiService;
 
     private static void setUpRetrofit() {
 
@@ -40,10 +39,10 @@ public class APIClient {
                         .create()))
                 .client(client)
                 .build()
-                .create(APIService.class);
+                .create(ApiService.class);
     }
 
-    public static APIService getApiService() {
+    public static ApiService getApiService() {
         if (apiService == null)
             setUpRetrofit();
 

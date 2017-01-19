@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Rohan on 17-Jan-17.
  */
 
-public class APIResponse<T> {
+public class ApiResponse<T> {
 
     @SerializedName("data")
     private T data;

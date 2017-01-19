@@ -57,12 +57,13 @@ public class LoginFragment extends BaseCallNoteFragment {
     @OnClick(R.id.google_sign_in_button)
     public void signIn() {
 
-        getBaseCallNoteActivity().showProgressDialog("Signing in...");
+        getBaseCallNoteActivity().showProgressDialog(getString(R.string.signing_in));
 
         if (getBaseCallNoteActivity().isNetworkConnected()) {
             getBaseCallNoteActivity().signIn();
         } else {
-            Toast.makeText(getBaseCallNoteActivity(), "Please connect to internet.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_LONG)
+                    .show();
             getBaseCallNoteActivity().dismissProgressDialog();
         }
     }
@@ -78,10 +79,11 @@ public class LoginFragment extends BaseCallNoteFragment {
             Call call = callsList.get(callsList.size() - 1);
 
             Bundle bundle = new Bundle();
-            bundle.putString("name", call.name);
-            bundle.putString("number", call.number);
-            bundle.putInt("callType", getBaseCallNoteActivity().getCallType(call.type));
-            bundle.putLong("date", call.callDate);
+            bundle.putString(getString(R.string.name_key), call.name);
+            bundle.putString(getString(R.string.number_key), call.number);
+            bundle.putInt(getString(R.string.callType_key), getBaseCallNoteActivity().getCallType
+                    (call.type));
+            bundle.putLong(getString(R.string.date_key), call.callDate);
             bundle.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, true);
 
             getBaseCallNoteActivity().switchFragment(new AddNoteFragment(), false, bundle, AddNoteFragment.class.getSimpleName());

@@ -87,10 +87,10 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("name", call.name);
-                bundle.putString("number", call.number);
-                bundle.putInt("callType", callType);
-                bundle.putLong("date", call.callDate);
+                bundle.putString(mContext.getString(R.string.name_key), call.name);
+                bundle.putString(mContext.getString(R.string.number_key), call.number);
+                bundle.putInt(mContext.getString(R.string.callType_key), callType);
+                bundle.putLong(mContext.getString(R.string.date_key), call.callDate);
                 ((BaseCallNoteActivity) mContext).switchFragment(new AddNoteFragment(), true, bundle, AddNoteFragment.class.getSimpleName());
             }
         });

@@ -15,8 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:singleLine="true"
-            android:text="Rohan"
+            android:maxLines="1"
             android:textSize="18sp" />
 
         <LinearLayout
@@ -30,7 +29,9 @@
                 android:id="@+id/call_type_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/call_type"
                 android:paddingEnd="5dp"
+                android:paddingStart="0dp"
                 android:src="@drawable/ic_call_made_green_300_18dp" />
 
             <TextView
@@ -38,15 +39,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="10dp"
-                android:text="+91 9891417273"
+                android:paddingStart="0dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/call_date_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Mon, 24 Jan, 23:13" />
+                android:layout_weight="1" />
 
         </LinearLayout>
 

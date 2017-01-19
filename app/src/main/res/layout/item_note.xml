@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/note_item_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,12 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:maxLines="1"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
-            android:singleLine="true"
-            android:text="Rohan"
+            android:maxLines="1"
             android:textSize="14sp" />
 
         <TextView
@@ -41,8 +38,6 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="2dp"
-            android:singleLine="true"
-            android:text="9891417273"
             android:textColor="#6000"
             android:textSize="13sp" />
 
@@ -56,7 +51,6 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="2dp"
-            android:text="Remind him at 8pm to pick up groceries"
             android:textSize="13sp" />
 
         <TextView
@@ -71,8 +65,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="2dp"
-            android:singleLine="true"
-            android:text="24 Jan, 17:02"
+            android:maxLines="1"
             android:textColor="#6000"
             android:textSize="10sp" />
 

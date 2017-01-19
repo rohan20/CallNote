@@ -9,11 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:maxLines="1"
-        android:paddingLeft="16dp"
-        android:paddingRight="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
         android:paddingTop="8dp"
-        android:singleLine="true"
-        android:text="Jose"
         android:textColor="#6000" />
 
     <TextView
@@ -24,10 +22,9 @@
         android:layout_below="@id/widget_caller_name_text_view"
         android:fontFamily="serif"
         android:paddingBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="8dp"
-        android:singleLine="true"
-        android:text="Set up meeting with Jose and Zlatan at 8pm."
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:maxLines="1"
         android:textColor="#6000" />
 
     <TextView
@@ -41,8 +38,8 @@
         android:layout_toEndOf="@id/widget_caller_name_text_view"
         android:gravity="center_vertical|end"
         android:paddingEnd="16dp"
+        android:paddingStart="0dp"
         android:paddingTop="8dp"
-        android:text="7 Jan, 17:08"
         android:textColor="#6000" />
 
 </RelativeLayout>

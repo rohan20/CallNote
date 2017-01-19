@@ -17,8 +17,8 @@ import android.widget.Toast;
 import com.rohan.callnote.BaseCallNoteFragment;
 import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
-import com.rohan.callnote.network.APIClient;
-import com.rohan.callnote.network.APIResponse;
+import com.rohan.callnote.network.ApiClient;
+import com.rohan.callnote.network.ApiResponse;
 import com.rohan.callnote.utils.Constants;
 
 import java.text.SimpleDateFormat;
@@ -77,10 +77,10 @@ public class AddNoteFragment extends BaseCallNoteFragment {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         if (b != null) {
-            name = b.getString("name");
-            number = b.getString("number");
-            callType = b.getInt("callType");
-            timestamp = b.getLong("date");
+            name = b.getString(getString(R.string.name_key));
+            number = b.getString(getString(R.string.number_key));
+            callType = b.getInt(getString(R.string.callType_key));
+            timestamp = b.getLong(getString(R.string.date_key));
             directlyFromCall = b.getBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL);
         }
 
@@ -115,37 +115,42 @@ public class AddNoteFragment extends BaseCallNoteFragment {
     public void saveButtonClicked() {
 
         if (!getBaseCallNoteActivity().isNetworkConnected()) {
-            Toast.makeText(getBaseCallNoteActivity(), "Please connect to internet.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseCallNoteActivity(), getString(R.string
+                    .please_connect_to_the_internet_toast), Toast.LENGTH_LONG).show();
             return;
         }
 
-        getBaseCallNoteActivity().showProgressDialog("Saving note...");
+        getBaseCallNoteActivity().showProgressDialog(getString(R.string.saving_note));
 
         String noteText = mNoteEditText.getText().toString();
 
         if (noteText.isEmpty() || noteText.equals("")) {
-            Toast.makeText(getBaseCallNoteActivity(), "Note cannot be empty.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.note_cannot_be_empty),
+                    Toast
+                    .LENGTH_SHORT).show();
             return;
         }
 
-        Call<APIResponse<Note>> call = APIClient.getApiService().addNote(number, noteText, callType);
-        call.enqueue(new Callback<APIResponse<Note>>() {
+        Call<ApiResponse<Note>> call = ApiClient.getApiService().addNote(number, noteText, callType);
+        call.enqueue(new Callback<ApiResponse<Note>>() {
             @Override
-            public void onResponse(Call<APIResponse<Note>> call, Response<APIResponse<Note>> response) {
+            public void onResponse(Call<ApiResponse<Note>> call, Response<ApiResponse<Note>> response) {
                 if (response.isSuccessful()) {
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                     getBaseCallNoteActivity().dismissProgressDialog();
                     getBaseCallNoteActivity().updateWidget();
                 } else {
-                    Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string
+                            .unable_to_save_note_toast), Toast.LENGTH_SHORT).show();
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
                     getBaseCallNoteActivity().dismissProgressDialog();
                 }
             }
 
             @Override
-            public void onFailure(Call<APIResponse<Note>> call, Throwable t) {
-                Toast.makeText(getBaseCallNoteActivity(), "Unable to save note right now. Please try later.", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ApiResponse<Note>> call, Throwable t) {
+                Toast.makeText(getBaseCallNoteActivity(), getString(R.string
+                        .unable_to_save_note_toast), Toast.LENGTH_SHORT).show();
                 getBaseCallNoteActivity().dismissProgressDialog();
 
                 getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());

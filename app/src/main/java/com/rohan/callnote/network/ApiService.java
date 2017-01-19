@@ -16,18 +16,18 @@ import retrofit2.http.Query;
  * Created by Rohan on 17-Jan-17.
  */
 
-public interface APIService {
+public interface ApiService {
 
     @POST("sign_up.json")
-    Call<APIResponse<User>> signUp(@Query("name") String name, @Query("email") String email, @Query("gtoken") String token);
+    Call<ApiResponse<User>> signUp(@Query("name") String name, @Query("email") String email, @Query("gtoken") String token);
 
     @POST("add_note.json")
-    Call<APIResponse<Note>> addNote(@Query("contact") String number, @Query("text") String noteText, @Query("note_type") int callType);
+    Call<ApiResponse<Note>> addNote(@Query("contact") String number, @Query("text") String noteText, @Query("note_type") int callType);
 
     @GET("all_notes.json")
-    Call<APIResponse<List<Note>>> getNotes();
+    Call<ApiResponse<List<Note>>> getNotes();
 
     @DELETE("note/{id}.json")
-    Call<APIResponse> deleteNote(@Path("id") String id);
+    Call<ApiResponse> deleteNote(@Path("id") String id);
 
 }

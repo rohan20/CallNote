@@ -17,4 +17,6 @@ public class Constants {
 
     public static final int NOTES_CURSOR_LOADER_ID = 3;
 
+    public static final int MY_PERMISSIONS_REQUEST_READ_CALL_LOG = 777;
+
 }

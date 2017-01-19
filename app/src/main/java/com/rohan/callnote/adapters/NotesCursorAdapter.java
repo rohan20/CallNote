@@ -72,11 +72,11 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
 
         //set call type
         if (Integer.parseInt(note.getCallType()) == Constants.CALL_MISSED) {
-            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#FFB6C1"));
+            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor(mContext.getString(R.string.color_light_red)));
         } else if (Integer.parseInt(note.getCallType()) == Constants.CALL_RECEIVED) {
-            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#81d8d0"));
+            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor(mContext.getString(R.string.color_light_blue)));
         } else {
-            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor("#00ff7f"));
+            holder.mNoteRelativeLayout.setBackgroundColor(Color.parseColor(mContext.getString(R.string.color_light_green)));
         }
 
         //set note text
@@ -97,7 +97,9 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                         .setMessage(note.getNumber())
                         .setCancelable(true)
-                        .setPositiveButton("Call", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(mContext.getString(R.string.call), new DialogInterface
+                                .OnClickListener
+                                () {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -114,7 +116,8 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
                                 mContext.startActivity(intent);
                             }
                         })
-                        .setNegativeButton("SMS", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(mContext.getString(R.string.SMS), new DialogInterface
+                                .OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -132,7 +135,8 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
                                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", phone, null)));
                             }
                         })
-                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNeutralButton(mContext.getString(R.string.cancel), new DialogInterface
+                                .OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 

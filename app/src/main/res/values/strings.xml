@@ -6,4 +6,33 @@
     <string name="server_client_id">YOUR_CLIENT_ID</string>
     <string name="no_notes_added">You haven\'t added notes yet. Click on the \'+\' button to add a note.</string>
     <string name="widget_no_notes_added">No notes added.</string>
+
+    <string name="edit_text_talk_back">Write note text here.</string>
+    <string name="call_type">Type of call</string>
+    <string name="app_logo">App Logo</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="select_call_to_add_note">Select call to add note:</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="note_hint">Add note text here...</string>
+    <string name="unable_to_save_note_toast">Unable to save note right now. Please try later.</string>
+    <string name="note_cannot_be_empty">Note cannot be empty.</string>
+    <string name="saving_note">Saving note...</string>
+    <string name="please_connect_to_the_internet_toast">Please connect to internet.</string>
+    <string name="date_key">date</string>
+    <string name="callType_key">callType</string>
+    <string name="number_key">number</string>
+    <string name="name_key">name</string>
+    <string name="failed_to_sign_in_toast">Failed to sign in. Please try later.</string>
+    <string name="unable_to_sign_in_toast">Unable to sign in right now. Please try later.</string>
+    <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="yes">Yes</string>
+    <string name="cancel_string">Cancel</string>
+    <string name="signing_in">Signing in...</string>
+    <string name="call">Call</string>
+    <string name="SMS">SMS</string>
+    <string name="unable_to_delete_note">Unable to delete note right now. Please try later.</string>
+    <string name="unable_to_fetch_notes">Unable to fetch latest notes right now. Please try later.</string>
+    <string name="permission_required_call_log">"Permission required to read "</string>
 </resources>
