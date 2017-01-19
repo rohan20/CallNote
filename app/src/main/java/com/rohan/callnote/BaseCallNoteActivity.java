@@ -84,7 +84,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     protected void onStart() {
         super.onStart();
 
-
         Bundle b = new Bundle();
         b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false);
 
@@ -111,6 +110,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
+
+        mGoogleApiClient.connect();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
@@ -199,7 +200,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                                     public void onResult(@NonNull Status status) {
                                         Toast.makeText(BaseCallNoteActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
                                         UserUtil.logout();
-
+                                        stopGoogleApiClient();
                                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
                                     }
                                 }
@@ -217,6 +218,11 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         dialog.show();
 
 
+    }
+
+    private void stopGoogleApiClient() {
+        mGoogleApiClient.stopAutoManage(this);
+        mGoogleApiClient.disconnect();
     }
 
     public boolean isNetworkConnected() {
