@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ import retrofit2.Response;
 import static com.rohan.callnote.utils.SharedPrefsUtil.USER_EMAIL;
 
 public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    static final String TAG = BaseCallNoteActivity.class.getSimpleName();
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -84,6 +87,9 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     protected void onStart() {
         super.onStart();
 
+        if(mGoogleApiClient != null)
+            mGoogleApiClient.connect();
+
         Bundle b = new Bundle();
         b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false);
 
@@ -94,11 +100,25 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(mGoogleApiClient != null)
+            mGoogleApiClient.disconnect();
+    }
+
     public static BaseCallNoteActivity getInstance() {
         return instance;
     }
 
     public void signIn() {
+
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            Toast.makeText(instance, getString(R.string.unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
+            mGoogleApiClient.disconnect();
+            return;
+        }
 
         GoogleSignInOptions googleSignInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -132,6 +152,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
         if (result.isSuccess()) {
 
+            Log.e(TAG, "result is success");
+
             GoogleSignInAccount acct = result.getSignInAccount();
 
             String name = acct.getDisplayName();
@@ -143,11 +165,13 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 @Override
                 public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                     if (response.isSuccessful()) {
+                        Log.e(TAG, "response.isSuccessful()");
                         User user = response.body().getData();
                         UserUtil.saveUser(user);
                         switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                         dismissProgressDialog();
                     } else {
+                        Log.e(TAG, "response not succesful");
                         Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                                 .failed_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                         dismissProgressDialog();
@@ -156,6 +180,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
                 @Override
                 public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                    Log.e(TAG, "onFailure() " + t.getMessage());
                     Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                             .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                     dismissProgressDialog();

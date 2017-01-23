@@ -2,6 +2,7 @@ package com.rohan.callnote.fragments;
 
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -24,16 +25,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rohan.callnote.BaseCallNoteFragment;
-import com.rohan.callnote.Manifest;
 import com.rohan.callnote.R;
 import com.rohan.callnote.adapters.NotesCursorAdapter;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.network.ApiClient;
 import com.rohan.callnote.network.ApiResponse;
+import com.rohan.callnote.network.ApiResponseDelete;
+import com.rohan.callnote.service.DeleteNoteService;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.Contract.NotesEntry;
-import com.rohan.callnote.utils.DBUtils;
-import com.rohan.callnote.utils.SharedPrefsUtil;
+import com.rohan.callnote.utils.DBUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +45,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.R.attr.id;
 
 
 /**
@@ -80,12 +83,19 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
         getBaseCallNoteActivity().getSupportActionBar().show();
         mAddCallFAB.setOnClickListener(this);
 
+        mProgressBar.setVisibility(View.VISIBLE);
+        mNotesRecyclerView.setVisibility(View.GONE);
+
+        setupNotesFragment();
+
+        return v;
+    }
+
+    private void setupNotesFragment() {
+
         mAdapterNotes = new NotesCursorAdapter(getBaseCallNoteActivity(), null);
         mNotesRecyclerView.setAdapter(mAdapterNotes);
         mNotesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        mProgressBar.setVisibility(View.VISIBLE);
-        mNotesRecyclerView.setVisibility(View.GONE);
 
         fetchNotesFromAPI();
 
@@ -104,46 +114,18 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                 int serverIDToBeDeleted = mCursor.getInt(mCursor.getColumnIndex(NotesEntry
                         .COLUMN_SERVER_ID));
 
-                deleteNoteFromAPI(serverIDToBeDeleted);
+                if (!getBaseCallNoteActivity().isNetworkConnected()) {
+                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
 
-                getBaseCallNoteActivity().updateWidget();
+                Intent intent = new Intent(getBaseCallNoteActivity(), DeleteNoteService.class);
+                intent.putExtra(Constants.NOTE_TO_BE_DELETED, serverIDToBeDeleted);
+                getBaseCallNoteActivity().startService(intent);
             }
         }).attachToRecyclerView(mNotesRecyclerView);
 
-        return v;
-    }
-
-    private void deleteNoteFromAPI(final int id) {
-        if (!getBaseCallNoteActivity().isNetworkConnected()) {
-            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_SHORT)
-                    .show();
-            return;
-        }
-
-        Call<ApiResponse> call = ApiClient.getApiService().deleteNote(String.valueOf(id));
-
-        call.enqueue(new Callback<ApiResponse>() {
-            @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                if (response.isSuccessful()) {
-                    String selection = NotesEntry.COLUMN_SERVER_ID + " =? ";
-                    String[] selectionArgs = {String.valueOf(id)};
-
-                    getBaseCallNoteActivity().getContentResolver().delete(NotesEntry.CONTENT_URI,
-                            selection, selectionArgs);
-
-                } else {
-                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string
-                            .unable_to_delete_note), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(getBaseCallNoteActivity(), getString(R.string.unable_to_delete_note),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void fetchNotesFromAPI() {
@@ -167,7 +149,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     Vector<ContentValues> cVVector = new Vector<ContentValues>(notesList.size());
 
                     for (Note note : notesList) {
-                        ContentValues noteValues = DBUtils.cvFromNotes(note);
+                        ContentValues noteValues = DBUtil.cvFromNotes(note);
                         cVVector.add(noteValues);
                     }
 
@@ -227,7 +209,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
                         ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
                                 new String[]{android.Manifest.permission.READ_CALL_LOG},
-                                Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG);
+                                Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB);
 
                         // MY_PERMISSIONS_REQUEST_READ_CALL_LOG is an
                         // app-defined int constant. The callback method gets the
@@ -246,7 +228,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG: {
+
+            case Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -265,6 +248,31 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     // functionality that depends on this permission.
                 }
             }
+
+            case Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    if (mAdapterNotes != null)
+                        mAdapterNotes.notifyDataSetChanged();
+                    else
+                        mAdapterNotes = new NotesCursorAdapter(getBaseCallNoteActivity(), null);
+
+                    break;
+
+                } else {
+
+                    Toast.makeText(getBaseCallNoteActivity(),
+                            getString(R.string.permission_required_call_log), Toast.LENGTH_SHORT)
+                            .show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+
 
             // other 'case' lines to check for other
             // permissions this app might request
@@ -292,7 +300,9 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        mAdapterNotes.swapCursor(data);
+        if (mAdapterNotes != null)
+            mAdapterNotes.swapCursor(data);
+
         mCursor = data;
 
         mProgressBar.setVisibility(View.GONE);
@@ -304,11 +314,14 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
             mEmptyTextView.setVisibility(View.GONE);
             mNotesRecyclerView.setVisibility(View.VISIBLE);
         }
+
+        getBaseCallNoteActivity().updateWidget();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapterNotes.swapCursor(null);
+        if (mAdapterNotes != null)
+            mAdapterNotes.swapCursor(null);
     }
 
 }

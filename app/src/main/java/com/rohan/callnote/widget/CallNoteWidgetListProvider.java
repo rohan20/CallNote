@@ -10,7 +10,7 @@ import android.widget.RemoteViewsService;
 import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.utils.Contract;
-import com.rohan.callnote.utils.DBUtils;
+import com.rohan.callnote.utils.DBUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -74,7 +74,7 @@ public class CallNoteWidgetListProvider implements RemoteViewsService.RemoteView
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget_layout);
         mCursor.moveToPosition(i);
 
-        Note note = DBUtils.getNoteFromCursor(mCursor);
+        Note note = DBUtil.getNoteFromCursor(mCursor);
 
         boolean contactIsUnknown = true;
 

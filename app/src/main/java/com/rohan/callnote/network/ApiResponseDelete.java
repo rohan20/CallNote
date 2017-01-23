@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Rohan on 17-Jan-17.
  */
 
-public class ApiResponse<T> {
+public class ApiResponseDelete<T> {
 
     @SerializedName("data")
     private T data;
@@ -16,12 +16,14 @@ public class ApiResponse<T> {
     private Integer status;
     @SerializedName("update")
     private String update;
+    @SerializedName("error")
+    private String error;
 
     public T getData() {
         return data;
     }
 
-    public void setData(T data ) {
+    public void setData(T data) {
         this.data = data;
     }
 
@@ -37,6 +39,10 @@ public class ApiResponse<T> {
         return status;
     }
 
+    public String getError() {
+        return error;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
@@ -49,5 +55,7 @@ public class ApiResponse<T> {
         this.update = update;
     }
 
-
+    public void setError(String error) {
+        this.error = error;
+    }
 }

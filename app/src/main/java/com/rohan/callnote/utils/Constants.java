@@ -17,6 +17,9 @@ public class Constants {
 
     public static final int NOTES_CURSOR_LOADER_ID = 3;
 
-    public static final int MY_PERMISSIONS_REQUEST_READ_CALL_LOG = 777;
+    public static final int MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB = 777;
+    public static final int MY_PERMISSIONS_REQUEST_READ_CALL_LOG = 888;
+
+    public static final String NOTE_TO_BE_DELETED = "note_to_be_deleted";
 
 }

@@ -52,6 +52,8 @@
             android:name=".widget.CallNoteWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <service android:name=".service.DeleteNoteService" />
+
     </application>
 
 </manifest>

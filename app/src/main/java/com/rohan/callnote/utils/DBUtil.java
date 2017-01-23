@@ -10,7 +10,7 @@ import com.rohan.callnote.models.Note;
  * Created by Rohan on 19-Jan-17.
  */
 
-public class DBUtils {
+public class DBUtil {
 
     public static ContentValues cvFromNotes(@NonNull Note note) {
 

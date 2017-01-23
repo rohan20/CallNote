@@ -1,4 +1,4 @@
-package com.rohan.callnote.utils;
+package com.rohan.callnote.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,8 +10,9 @@ import android.view.ViewGroup;
  * Created by Rohan on 19-Jan-17.
  */
 
-public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView
-        .Adapter<VH> {
+public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends
+        RecyclerView
+                .Adapter<VH> {
 
     private static final String LOG_TAG = CursorRecyclerViewAdapter.class.getSimpleName();
     private Cursor mCursor;

@@ -3,7 +3,7 @@
     <string name="content_authority">com.rohan.callnote</string>
 
     <!-- TODO (user): replace with your real server client ID -->
-    <string name="server_client_id">YOUR_CLIENT_ID</string>
+    <string name="server_client_id">210203699505-2oc822rv47b185kbc1kih2i2vd4vcmr2.apps.googleusercontent.com</string>
     <string name="no_notes_added">You haven\'t added notes yet. Click on the \'+\' button to add a note.</string>
     <string name="widget_no_notes_added">No notes added.</string>
 
@@ -35,4 +35,5 @@
     <string name="unable_to_delete_note">Unable to delete note right now. Please try later.</string>
     <string name="unable_to_fetch_notes">Unable to fetch latest notes right now. Please try later.</string>
     <string name="permission_required_call_log">"Permission required to read "</string>
+    <string name="note_deleted">Note deleted.</string>
 </resources>

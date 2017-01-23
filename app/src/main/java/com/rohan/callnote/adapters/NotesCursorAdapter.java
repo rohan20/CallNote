@@ -3,10 +3,13 @@ package com.rohan.callnote.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +24,7 @@ import com.rohan.callnote.BaseCallNoteActivity;
 import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.utils.Constants;
-import com.rohan.callnote.utils.CursorRecyclerViewAdapter;
-import com.rohan.callnote.utils.DBUtils;
+import com.rohan.callnote.utils.DBUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +33,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.everything.providers.android.calllog.Call;
 import me.everything.providers.android.calllog.CallsProvider;
-import okhttp3.internal.Util;
 
 /**
  * Created by Rohan on 19-Jan-17.
@@ -50,17 +51,45 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
     @Override
     public void onBindViewHolder(NotesCursorAdapter.ViewHolder holder, Cursor cursor) {
 
-        final Note note = DBUtils.getNoteFromCursor(cursor);
+        final Note note = DBUtil.getNoteFromCursor(cursor);
 
         //set contact name
         boolean contactIsUnknown = true;
 
-        CallsProvider callsProvider = new CallsProvider(mContext);
-        for (Call call : callsProvider.getCalls().getList()) {
-            if (call.number.equals(note.getNumber())) {
-                holder.mCallerNameTextView.setText(call.name);
-                contactIsUnknown = false;
-                break;
+        if (ContextCompat.checkSelfPermission(mContext,
+                android.Manifest.permission.READ_CALL_LOG)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale((BaseCallNoteActivity) mContext,
+                    android.Manifest.permission.READ_CALL_LOG)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions((BaseCallNoteActivity) mContext,
+                        new String[]{android.Manifest.permission.READ_CALL_LOG},
+                        Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG);
+
+                // MY_PERMISSIONS_REQUEST_READ_CALL_LOG is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.READ_CALL_LOG)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            CallsProvider callsProvider = new CallsProvider(mContext);
+            for (Call call : callsProvider.getCalls().getList()) {
+                if (call.number.equals(note.getNumber())) {
+                    holder.mCallerNameTextView.setText(call.name);
+                    contactIsUnknown = false;
+                    break;
+                }
             }
         }
 
