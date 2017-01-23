@@ -87,7 +87,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     protected void onStart() {
         super.onStart();
 
-        if(mGoogleApiClient != null)
+        if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
 
         Bundle b = new Bundle();
@@ -104,8 +104,10 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     protected void onStop() {
         super.onStop();
 
-        if(mGoogleApiClient != null)
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.stopAutoManage(this);
             mGoogleApiClient.disconnect();
+        }
     }
 
     public static BaseCallNoteActivity getInstance() {
