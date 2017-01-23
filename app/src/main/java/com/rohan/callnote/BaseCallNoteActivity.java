@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -81,14 +80,23 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         signInProgressDialog.setCanceledOnTouchOutside(false);
 
         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
+
+        GoogleSignInOptions googleSignInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.server_client_id))
+                        .requestEmail()
+                        .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(BaseCallNoteActivity.this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .build();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
 
         Bundle b = new Bundle();
         b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false);
@@ -100,40 +108,11 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.stopAutoManage(this);
-            mGoogleApiClient.disconnect();
-        }
-    }
-
     public static BaseCallNoteActivity getInstance() {
         return instance;
     }
 
     public void signIn() {
-
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            Toast.makeText(instance, getString(R.string.unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
-            mGoogleApiClient.disconnect();
-            return;
-        }
-
-        GoogleSignInOptions googleSignInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.server_client_id))
-                        .requestEmail()
-                        .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .build();
-
-        mGoogleApiClient.connect();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN);
@@ -154,8 +133,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
         if (result.isSuccess()) {
 
-            Log.e(TAG, "result is success");
-
             GoogleSignInAccount acct = result.getSignInAccount();
 
             String name = acct.getDisplayName();
@@ -167,13 +144,13 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 @Override
                 public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                     if (response.isSuccessful()) {
-                        Log.e(TAG, "response.isSuccessful()");
                         User user = response.body().getData();
                         UserUtil.saveUser(user);
                         switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                         dismissProgressDialog();
                     } else {
-                        Log.e(TAG, "response not succesful");
+                        Toast.makeText(BaseCallNoteActivity.this, "result success false", Toast
+                                .LENGTH_SHORT).show();
                         Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                                 .failed_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                         dismissProgressDialog();
@@ -182,7 +159,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
                 @Override
                 public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-                    Log.e(TAG, "onFailure() " + t.getMessage());
+                    Toast.makeText(BaseCallNoteActivity.this, "result failure", Toast
+                            .LENGTH_SHORT).show();
                     Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                             .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                     dismissProgressDialog();
@@ -190,6 +168,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             });
 
         } else {
+            Toast.makeText(BaseCallNoteActivity.this, "result.isSuccess() false", Toast
+                    .LENGTH_SHORT).show();
             Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                     .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
             dismissProgressDialog();
@@ -231,7 +211,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                                         Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                                                 .signed_out), Toast.LENGTH_SHORT).show();
                                         UserUtil.logout();
-                                        stopGoogleApiClient();
                                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
                                     }
                                 }
@@ -250,11 +229,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         dialog.show();
 
 
-    }
-
-    private void stopGoogleApiClient() {
-        mGoogleApiClient.stopAutoManage(this);
-        mGoogleApiClient.disconnect();
     }
 
     public boolean isNetworkConnected() {
@@ -326,7 +300,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(instance, "Connection Failed " + connectionResult.getErrorMessage(), Toast.LENGTH_SHORT)
+                .show();
     }
 
     public int getCallType(me.everything.providers.android.calllog.Call.CallType callType) {
