@@ -149,8 +149,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                         switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                         dismissProgressDialog();
                     } else {
-                        Toast.makeText(BaseCallNoteActivity.this, "result success false", Toast
-                                .LENGTH_SHORT).show();
                         Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                                 .failed_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                         dismissProgressDialog();
@@ -159,8 +157,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
                 @Override
                 public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-                    Toast.makeText(BaseCallNoteActivity.this, "result failure", Toast
-                            .LENGTH_SHORT).show();
                     Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                             .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
                     dismissProgressDialog();
@@ -168,8 +164,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             });
 
         } else {
-            Toast.makeText(BaseCallNoteActivity.this, "result.isSuccess() false", Toast
-                    .LENGTH_SHORT).show();
             Toast.makeText(BaseCallNoteActivity.this, getString(R.string
                     .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
             dismissProgressDialog();
@@ -300,8 +294,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(instance, "Connection Failed " + connectionResult.getErrorMessage(), Toast.LENGTH_SHORT)
-                .show();
     }
 
     public int getCallType(me.everything.providers.android.calllog.Call.CallType callType) {

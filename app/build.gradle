@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'callnote_alias'
             keyPassword 'callnote'
-            storeFile file('$rootdir/callnote_keystore.jks')
+            storeFile file("$rootDir/callnote_keystore.jks")
             storePassword 'callnote'
         }
     }
