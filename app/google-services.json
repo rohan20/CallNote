@@ -1,0 +1,66 @@
+{
+  "project_info": {
+    "project_number": "210203699505",
+    "firebase_url": "https://call-note-capstone.firebaseio.com",
+    "project_id": "call-note-capstone",
+    "storage_bucket": "call-note-capstone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210203699505:android:4f5704312b729047",
+        "android_client_info": {
+          "package_name": "com.rohan.callnote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210203699505-556u7g45d9257i9jh158f3kn2aamk9b4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rohan.callnote",
+            "certificate_hash": "B5B4E2C41197BC0DA529E1C5FE3E8A46D53EAD89"
+          }
+        },
+        {
+          "client_id": "210203699505-oollgd17vf13np9q1ka1njc4jnuid1jg.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "210203699505-fks4dql568fgb99rqos81gqf02cq92aj.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "210203699505-2oc822rv47b185kbc1kih2i2vd4vcmr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzHGa6yI_sz-jkiPYpKC-8iZ1p1HwaAcU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-90403157-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210203699505-oollgd17vf13np9q1ka1njc4jnuid1jg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
