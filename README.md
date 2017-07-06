@@ -11,13 +11,13 @@ NOTE: Replace YOUR_CLIENT_ID with your own client id obtained from the google de
 
 <b>Screenshots</b>
 
-![Call Note](https://drive.google.com/open?id=0B0RcLSVroVYwa0VZZjdVM0YxNjg)
+![Call Note](screenshots/Screenshot_20170520-233909.png)
 
-![All Notes](https://drive.google.com/open?id=0B0RcLSVroVYwMjZnNURBcmh6LUE "All notes")
+![All Notes](screenshots/Screenshot_20170520-234023.png "All notes")
 
-![Call Log](https://drive.google.com/open?id=0B0RcLSVroVYwUDJWSkY3aEtmMm8 "Add note from call log")
+![Call Log](screenshots/Screenshot_20170520-234028.png "Add note from call log")
 
-![Swipe To Delete Note](https://drive.google.com/open?id=0B0RcLSVroVYwU1lmZGtraHFrQjA "Swipe to delete note")
+![Swipe To Delete Note](screenshots/Screenshot_20170520-234100.png "Swipe to delete note")
 
-![Add note](https://drive.google.com/open?id=0B0RcLSVroVYwZ2h0LVJiN0ZwTHc "Add note")
+![Add note](screenshots/Screenshot_20170520-234358.png "Add note")
 
