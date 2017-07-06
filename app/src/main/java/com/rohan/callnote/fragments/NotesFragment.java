@@ -98,7 +98,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
         fetchNotesFromAPI();
 
-//        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
+        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -157,20 +157,24 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                         ContentValues[] cvArray = new ContentValues[cVVector.size()];
                         cVVector.toArray(cvArray);
 
-                        getBaseCallNoteActivity().getApplicationContext().getContentResolver()
-                                .bulkInsert(
-                                        NotesEntry.CONTENT_URI, cvArray);
+                        if (getBaseCallNoteActivity() != null)
+                            getBaseCallNoteActivity().getApplicationContext().getContentResolver()
+                                    .bulkInsert(
+                                            NotesEntry.CONTENT_URI, cvArray);
                     }
 
-                    getBaseCallNoteActivity().updateWidget();
+                    if (getBaseCallNoteActivity() != null)
+                        getBaseCallNoteActivity().updateWidget();
 
-                    if (getLoaderManager().hasRunningLoaders())
-                        getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
-                                NotesFragment.this);
-                    else
-                        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
-                                NotesFragment.this);
+                    if (isAdded()) {
 
+                        if (getLoaderManager().hasRunningLoaders())
+                            getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
+                                    NotesFragment.this);
+                        else
+                            getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
+                                    NotesFragment.this);
+                    }
 
                 } else {
                     Toast.makeText(getBaseCallNoteActivity(), getString(R.string
@@ -196,6 +200,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
             ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
                     new String[]{android.Manifest.permission.READ_CALL_LOG},
                     Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB);
+
+            fabClicked();
         } else {
             getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
         }
@@ -284,7 +290,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
         return new CursorLoader(getActivity(), NotesEntry.CONTENT_URI,
                 new String[]{NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
                         NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
-                        NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP, NotesEntry.COLUMN_CURRENT_USER_EMAIL},
+                        NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP,
+                        NotesEntry.COLUMN_CURRENT_USER_EMAIL},
                 selection, selectionArgs, null);
     }
 

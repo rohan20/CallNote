@@ -87,11 +87,10 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                         .requestEmail()
                         .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .enableAutoManage(BaseCallNoteActivity.this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
-
     }
 
     @Override
@@ -312,12 +311,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        // TODO: 06-Jul-17 Exit App on pressing back button twice
     }
 
 }

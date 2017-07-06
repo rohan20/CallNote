@@ -11,6 +11,7 @@ import com.rohan.callnote.R;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.utils.Contract;
 import com.rohan.callnote.utils.DBUtil;
+import com.rohan.callnote.utils.UserUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,11 +40,17 @@ public class CallNoteWidgetListProvider implements RemoteViewsService.RemoteView
         }
         final long identityToken = Binder.clearCallingIdentity();
 
+        String selection = Contract.NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
+        String[] selectionArgs = new String[]{
+                UserUtil.getEmail()
+        };
+
+
         mCursor = mContext.getContentResolver().query(Contract.NotesEntry.CONTENT_URI,
                 new String[]{Contract.NotesEntry._ID, Contract.NotesEntry.COLUMN_SERVER_ID,
                         Contract.NotesEntry.COLUMN_NUMBER, Contract.NotesEntry.COLUMN_NOTE_TEXT,
                         Contract.NotesEntry.COLUMN_CALL_TYPE, Contract.NotesEntry
-                        .COLUMN_TIMESTAMP}, null, null, null);
+                        .COLUMN_TIMESTAMP, Contract.NotesEntry.COLUMN_CURRENT_USER_EMAIL}, selection, selectionArgs, null);
 
         Binder.restoreCallingIdentity(identityToken);
     }

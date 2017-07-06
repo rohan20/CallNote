@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_item_background_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,10 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:maxLines="1"
-        android:paddingStart="16dp"
         android:paddingEnd="8dp"
+        android:paddingStart="16dp"
         android:paddingTop="8dp"
-        android:textColor="#6000" />
+        android:textColor="@android:color/black"/>
 
     <TextView
         android:id="@+id/widget_caller_note_text_text_view"
@@ -21,11 +23,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/widget_caller_name_text_view"
         android:fontFamily="serif"
-        android:paddingBottom="4dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="8dp"
         android:maxLines="1"
-        android:textColor="#6000" />
+        android:paddingBottom="4dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="16dp"
+        android:textColor="@android:color/black"/>
 
     <TextView
         android:id="@+id/widget_call_time_text_view"
@@ -40,6 +42,6 @@
         android:paddingEnd="16dp"
         android:paddingStart="0dp"
         android:paddingTop="8dp"
-        android:textColor="#6000" />
+        android:textColor="@android:color/black"/>
 
 </RelativeLayout>
