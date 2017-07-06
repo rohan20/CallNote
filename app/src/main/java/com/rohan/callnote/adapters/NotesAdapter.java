@@ -38,47 +38,23 @@ import me.everything.providers.android.calllog.CallsProvider;
  * Created by Rohan on 19-Jan-17.
  */
 
-public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAdapter
+public class NotesAdapter extends CursorRecyclerViewAdapter<NotesAdapter
         .ViewHolder> {
 
     private Context mContext;
 
-    public NotesCursorAdapter(Context context, Cursor cursor) {
+    public NotesAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         mContext = context;
     }
 
     @Override
-    public void onBindViewHolder(NotesCursorAdapter.ViewHolder holder, Cursor cursor) {
+    public void onBindViewHolder(NotesAdapter.ViewHolder holder, Cursor cursor) {
 
         final Note note = DBUtil.getNoteFromCursor(cursor);
 
         //set contact name
         boolean contactIsUnknown = true;
-
-        if (ContextCompat.checkSelfPermission(mContext,
-                android.Manifest.permission.READ_CALL_LOG)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale((BaseCallNoteActivity) mContext,
-                    android.Manifest.permission.READ_CALL_LOG)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions((BaseCallNoteActivity) mContext,
-                        new String[]{android.Manifest.permission.READ_CALL_LOG},
-                        Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG);
-
-                // MY_PERMISSIONS_REQUEST_READ_CALL_LOG is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
 
         if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.READ_CALL_LOG)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -184,7 +160,7 @@ public class NotesCursorAdapter extends CursorRecyclerViewAdapter<NotesCursorAda
     }
 
     @Override
-    public NotesCursorAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NotesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.item_note, parent, false);

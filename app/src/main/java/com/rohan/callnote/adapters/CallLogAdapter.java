@@ -28,12 +28,12 @@ import me.everything.providers.android.calllog.Call;
  * Created by Rohan on 17-Jan-17.
  */
 
-public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerViewAdapterCallLog.ViewHolder> {
+public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
 
     Context mContext;
     List<Call> mCallsList;
 
-    public RecyclerViewAdapterCallLog(Context context) {
+    public CallLogAdapter(Context context) {
         mContext = context;
         mCallsList = new ArrayList<>();
     }
@@ -44,7 +44,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public RecyclerViewAdapterCallLog.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CallLogAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.item_call_log, parent, false);
@@ -53,7 +53,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapterCallLog.ViewHolder holder, int position) {
+    public void onBindViewHolder(CallLogAdapter.ViewHolder holder, int position) {
 
         final Call call = mCallsList.get(position);
 

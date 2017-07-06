@@ -70,6 +70,8 @@ public class AddNoteFragment extends BaseCallNoteFragment {
         View v = inflater.inflate(R.layout.fragment_add_note, container, false);
         ButterKnife.bind(this, v);
 
+
+
         mNoteEditText.requestFocus();
         Bundle b = getArguments();
 

@@ -54,7 +54,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     Toolbar mToolbar;
 
     GoogleApiClient mGoogleApiClient;
-    private static BaseCallNoteActivity instance;
+    public static BaseCallNoteActivity instance;
     private ProgressDialog signInProgressDialog;
 
     public FirebaseAnalytics mFirebaseAnalytics;
@@ -313,4 +313,11 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // TODO: 06-Jul-17 Exit App on pressing back button twice
+    }
+
 }

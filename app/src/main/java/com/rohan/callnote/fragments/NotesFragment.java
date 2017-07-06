@@ -17,6 +17,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +27,15 @@ import android.widget.Toast;
 
 import com.rohan.callnote.BaseCallNoteFragment;
 import com.rohan.callnote.R;
-import com.rohan.callnote.adapters.NotesCursorAdapter;
+import com.rohan.callnote.adapters.NotesAdapter;
 import com.rohan.callnote.models.Note;
 import com.rohan.callnote.network.ApiClient;
 import com.rohan.callnote.network.ApiResponse;
-import com.rohan.callnote.network.ApiResponseDelete;
 import com.rohan.callnote.service.DeleteNoteService;
 import com.rohan.callnote.utils.Constants;
 import com.rohan.callnote.utils.Contract.NotesEntry;
 import com.rohan.callnote.utils.DBUtil;
+import com.rohan.callnote.utils.UserUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +46,6 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.R.attr.id;
 
 
 /**
@@ -65,7 +64,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @BindView(R.id.notes_progress_bar)
     ProgressBar mProgressBar;
 
-    private NotesCursorAdapter mAdapterNotes;
+    private NotesAdapter mAdapterNotes;
     private Cursor mCursor;
 
     public NotesFragment() {
@@ -93,13 +92,13 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
     private void setupNotesFragment() {
 
-        mAdapterNotes = new NotesCursorAdapter(getBaseCallNoteActivity(), null);
+        mAdapterNotes = new NotesAdapter(getBaseCallNoteActivity(), null);
         mNotesRecyclerView.setAdapter(mAdapterNotes);
         mNotesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         fetchNotesFromAPI();
 
-        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
+//        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -146,9 +145,10 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     List<Note> notesList = response.body().getData();
                     Collections.reverse(notesList);
 
-                    Vector<ContentValues> cVVector = new Vector<ContentValues>(notesList.size());
+                    Vector<ContentValues> cVVector = new Vector<>(notesList.size());
 
                     for (Note note : notesList) {
+                        note.setEmail(UserUtil.getEmail());
                         ContentValues noteValues = DBUtil.cvFromNotes(note);
                         cVVector.add(noteValues);
                     }
@@ -157,8 +157,9 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                         ContentValues[] cvArray = new ContentValues[cVVector.size()];
                         cVVector.toArray(cvArray);
 
-                        getBaseCallNoteActivity().getApplicationContext().getContentResolver().bulkInsert(
-                                NotesEntry.CONTENT_URI, cvArray);
+                        getBaseCallNoteActivity().getApplicationContext().getContentResolver()
+                                .bulkInsert(
+                                        NotesEntry.CONTENT_URI, cvArray);
                     }
 
                     getBaseCallNoteActivity().updateWidget();
@@ -188,40 +189,25 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
     }
 
+    private void fabClicked() {
+        if (ContextCompat.checkSelfPermission(getBaseCallNoteActivity(),
+                android.Manifest.permission.READ_CALL_LOG)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
+                    new String[]{android.Manifest.permission.READ_CALL_LOG},
+                    Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB);
+        } else {
+            getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
+        }
+
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_call_fab:
-
-                if (ContextCompat.checkSelfPermission(getBaseCallNoteActivity(),
-                        android.Manifest.permission.READ_CALL_LOG)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(getBaseCallNoteActivity(),
-                            android.Manifest.permission.READ_CALL_LOG)) {
-
-                        // Show an explanation to the user *asynchronously* -- don't block
-                        // this thread waiting for the user's response! After the user
-                        // sees the explanation, try again to request the permission.
-
-                    } else {
-
-                        // No explanation needed, we can request the permission.
-
-                        ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
-                                new String[]{android.Manifest.permission.READ_CALL_LOG},
-                                Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB);
-
-                        // MY_PERMISSIONS_REQUEST_READ_CALL_LOG is an
-                        // app-defined int constant. The callback method gets the
-                        // result of the request.
-                        break;
-                    }
-                } else {
-                    getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
-                    break;
-                }
-
-
+                fabClicked();
+                break;
         }
     }
 
@@ -259,7 +245,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     if (mAdapterNotes != null)
                         mAdapterNotes.notifyDataSetChanged();
                     else
-                        mAdapterNotes = new NotesCursorAdapter(getBaseCallNoteActivity(), null);
+                        mAdapterNotes = new NotesAdapter(getBaseCallNoteActivity(), null);
 
                     break;
 
@@ -290,11 +276,16 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
+        String[] selectionArgs = new String[]{
+                UserUtil.getEmail()
+        };
+
         return new CursorLoader(getActivity(), NotesEntry.CONTENT_URI,
                 new String[]{NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
                         NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
-                        NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP},
-                null, null, null);
+                        NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP, NotesEntry.COLUMN_CURRENT_USER_EMAIL},
+                selection, selectionArgs, null);
     }
 
     @Override

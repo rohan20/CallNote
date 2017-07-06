@@ -33,7 +33,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 + Contract.NotesEntry.COLUMN_NUMBER + " TEXT, "
                 + Contract.NotesEntry.COLUMN_NOTE_TEXT + " TEXT, "
                 + Contract.NotesEntry.COLUMN_CALL_TYPE + " TEXT, "
-                + Contract.NotesEntry.COLUMN_TIMESTAMP + " TEXT)";
+                + Contract.NotesEntry.COLUMN_TIMESTAMP + " TEXT, "
+                + Contract.NotesEntry.COLUMN_CURRENT_USER_EMAIL + " TEXT)";
 
         sqLiteDatabase.execSQL(SQL_CREATE_NOTES_TABLE);
     }

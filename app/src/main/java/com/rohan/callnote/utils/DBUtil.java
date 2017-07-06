@@ -20,6 +20,7 @@ public class DBUtil {
         noteValues.put(Contract.NotesEntry.COLUMN_NOTE_TEXT, note.getNoteText());
         noteValues.put(Contract.NotesEntry.COLUMN_CALL_TYPE, note.getCallType());
         noteValues.put(Contract.NotesEntry.COLUMN_TIMESTAMP, note.getTimestamp());
+        noteValues.put(Contract.NotesEntry.COLUMN_CURRENT_USER_EMAIL, note.getEmail());
 
         return noteValues;
     }
@@ -38,7 +39,8 @@ public class DBUtil {
                 .COLUMN_CALL_TYPE)));
         note.setTimestamp(cursor.getString(cursor.getColumnIndex(Contract.NotesEntry
                 .COLUMN_TIMESTAMP)));
-
+        note.setEmail(cursor.getString(cursor.getColumnIndex(Contract.NotesEntry
+                .COLUMN_CURRENT_USER_EMAIL)));
         return note;
     }
 

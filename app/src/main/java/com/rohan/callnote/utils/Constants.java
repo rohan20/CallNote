@@ -6,7 +6,9 @@ package com.rohan.callnote.utils;
 
 public class Constants {
 
-    public static final String BASE_URL = "http://capstone-taneja.herokuapp.com/";
+    // TODO: 06-Jul-17 Replace <server_client_id> in strings.xml
+
+    public static final String BASE_URL = "http://polar-thicket-35835.herokuapp.com/";
     public static final int GOOGLE_SIGN_IN = 100;
 
     public static final String ADD_NOTE_DIRECTLY_FROM_CALL = "add_note_directly_from_call";

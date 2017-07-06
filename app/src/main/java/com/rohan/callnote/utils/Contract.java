@@ -30,7 +30,7 @@ public class Contract {
         public static final String COLUMN_NOTE_TEXT = "note_text";
         public static final String COLUMN_CALL_TYPE = "call_type";
         public static final String COLUMN_TIMESTAMP = "timestamp";
-//        public static final String COLUMN_CURRENT_USER_EMAIL = "current_user_email";
+        public static final String COLUMN_CURRENT_USER_EMAIL = "current_user_email";
 
         public static Uri buildNotesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

@@ -19,6 +19,12 @@ public class Note {
     @SerializedName("timestamp")
     private String timestamp;
 
+    private String email;
+
+    public Note() {
+        email = null;
+    }
+
     public int getServerID() {
         return serverID;
     }
@@ -57,5 +63,13 @@ public class Note {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

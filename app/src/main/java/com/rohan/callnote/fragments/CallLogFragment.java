@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.rohan.callnote.BaseCallNoteFragment;
 import com.rohan.callnote.R;
-import com.rohan.callnote.adapters.RecyclerViewAdapterCallLog;
+import com.rohan.callnote.adapters.CallLogAdapter;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ public class CallLogFragment extends BaseCallNoteFragment {
         Collections.reverse(callsList);
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getBaseCallNoteActivity(), LinearLayoutManager.VERTICAL, false);
-        RecyclerViewAdapterCallLog mAdapterCallLog = new RecyclerViewAdapterCallLog(getBaseCallNoteActivity());
+        CallLogAdapter mAdapterCallLog = new CallLogAdapter(getBaseCallNoteActivity());
         mCallLogRecyclerView.setAdapter(mAdapterCallLog);
         mCallLogRecyclerView.setLayoutManager(mLinearLayoutManager);
         mAdapterCallLog.setRecyclerViewCallLogList(callsList);
