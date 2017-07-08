@@ -15,7 +15,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="note_hint">Add note text here...</string>
-    <string name="unable_to_save_note_toast">Unable to save note right now. Please try later.</string>
+    <string name="unable_to_save_note_toast">Unable to save <no></no>te right now. Please try later.</string>
     <string name="note_cannot_be_empty">Note cannot be empty.</string>
     <string name="saving_note">Saving note...</string>
     <string name="please_connect_to_the_internet_toast">Please connect to internet.</string>

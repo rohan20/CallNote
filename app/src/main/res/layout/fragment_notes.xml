@@ -4,7 +4,7 @@
     android:id="@+id/notes_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rohan.callnote.fragments.NotesFragment">
+    tools:context="com.rohan.callnote2.fragments.NotesFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

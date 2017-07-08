@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.rohan.callnote">
+          package="com.rohan.callnote2">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CALL_LOG"/>
@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".BaseCallNoteActivity"
+            android:name="com.rohan.callnote2.BaseCallNoteActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -26,7 +26,7 @@
         </activity>
 
         <receiver
-            android:name=".CallStateReceiver"
+            android:name="com.rohan.callnote2.CallStateReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -35,12 +35,12 @@
         </receiver>
 
         <provider
-            android:name=".utils.CallNoteContentProvider"
+            android:name="com.rohan.callnote2.utils.CallNoteContentProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true"/>
 
-        <receiver android:name=".widget.CallNoteWidget">
+        <receiver android:name="com.rohan.callnote2.widget.CallNoteWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -51,10 +51,10 @@
         </receiver>
 
         <service
-            android:name=".widget.CallNoteWidgetService"
+            android:name="com.rohan.callnote2.widget.CallNoteWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
-        <service android:name=".service.DeleteNoteService"/>
+        <service android:name="com.rohan.callnote2.service.DeleteNoteService"/>
 
     </application>
 
