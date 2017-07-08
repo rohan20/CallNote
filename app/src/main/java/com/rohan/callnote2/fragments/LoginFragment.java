@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.google.android.gms.common.SignInButton;
 import com.rohan.callnote2.BaseCallNoteFragment;
 import com.rohan.callnote2.R;
@@ -62,8 +60,7 @@ public class LoginFragment extends BaseCallNoteFragment {
         if (getBaseCallNoteActivity().isNetworkConnected()) {
             getBaseCallNoteActivity().signIn();
         } else {
-            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_LONG)
-                    .show();
+            getBaseCallNoteActivity().showSnackbar(getString(R.string.please_connect_to_the_internet_error));
             getBaseCallNoteActivity().dismissProgressDialog();
         }
     }

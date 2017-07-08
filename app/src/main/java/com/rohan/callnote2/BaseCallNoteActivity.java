@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -160,8 +159,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                         switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                         dismissProgressDialog();
                     } else {
-                        Toast.makeText(BaseCallNoteActivity.this, getString(R.string
-                                .failed_to_sign_in_toast), Toast.LENGTH_SHORT).show();
+                        showSnackbar(getString(R.string.failed_to_sign_in_error));
                         dismissProgressDialog();
                     }
                 }
@@ -169,16 +167,14 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 @Override
                 public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
                     Log.e("status", t.getMessage());
-                    Toast.makeText(BaseCallNoteActivity.this, getString(R.string
-                            .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
+                    showSnackbar(getString(R.string.unable_to_sign_in_error));
                     dismissProgressDialog();
                 }
             });
 
         } else {
             Log.e("status result", result.getStatus().toString());
-            Toast.makeText(BaseCallNoteActivity.this, getString(R.string
-                    .unable_to_sign_in_toast), Toast.LENGTH_SHORT).show();
+            showSnackbar(getString(R.string.unable_to_sign_in_error));
             dismissProgressDialog();
         }
     }
@@ -215,9 +211,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                                 new ResultCallback<Status>() {
                                     @Override
                                     public void onResult(@NonNull Status status) {
-//                                        showSnackbar(getString(R.string.signed_out));
-                                        Toast.makeText(BaseCallNoteActivity.this, getString(R.string
-                                                .signed_out), Toast.LENGTH_SHORT).show();
+                                        showSnackbar(getString(R.string.signed_out));
                                         UserUtil.logout();
                                         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
                                     }
@@ -328,8 +322,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         sendBroadcast(intent);
     }
 
-//    public void showSnackbar(String snackbarText) {
-//        Snackbar.make(mParentLayout, snackbarText, Snackbar.LENGTH_SHORT).show();
-//    }
+    public void showSnackbar(String snackbarText) {
+        Snackbar.make(mParentLayout, snackbarText, Snackbar.LENGTH_SHORT).show();
+    }
 
 }

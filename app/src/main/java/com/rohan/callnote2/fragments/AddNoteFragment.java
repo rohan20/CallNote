@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rohan.callnote2.BaseCallNoteFragment;
 import com.rohan.callnote2.R;
@@ -71,7 +70,6 @@ public class AddNoteFragment extends BaseCallNoteFragment {
         ButterKnife.bind(this, v);
 
 
-
         mNoteEditText.requestFocus();
         Bundle b = getArguments();
 
@@ -117,8 +115,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
     public void saveButtonClicked() {
 
         if (!getBaseCallNoteActivity().isNetworkConnected()) {
-            Toast.makeText(getBaseCallNoteActivity(), getString(R.string
-                    .please_connect_to_the_internet_toast), Toast.LENGTH_LONG).show();
+            getBaseCallNoteActivity().showSnackbar(getString(R.string.please_connect_to_the_internet_error));
             return;
         }
 
@@ -127,9 +124,8 @@ public class AddNoteFragment extends BaseCallNoteFragment {
         String noteText = mNoteEditText.getText().toString();
 
         if (noteText.isEmpty() || noteText.equals("")) {
-            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.note_cannot_be_empty),
-                    Toast
-                    .LENGTH_SHORT).show();
+            getBaseCallNoteActivity().showSnackbar(getString(R.string.note_cannot_be_empty));
+            getBaseCallNoteActivity().dismissProgressDialog();
             return;
         }
 
@@ -142,8 +138,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
                     getBaseCallNoteActivity().dismissProgressDialog();
                     getBaseCallNoteActivity().updateWidget();
                 } else {
-                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string
-                            .unable_to_save_note_toast), Toast.LENGTH_SHORT).show();
+                    getBaseCallNoteActivity().showSnackbar(getString(R.string.unable_to_sign_in_error));
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());
                     getBaseCallNoteActivity().dismissProgressDialog();
                 }
@@ -151,8 +146,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
 
             @Override
             public void onFailure(Call<ApiResponse<Note>> call, Throwable t) {
-                Toast.makeText(getBaseCallNoteActivity(), getString(R.string
-                        .unable_to_save_note_toast), Toast.LENGTH_SHORT).show();
+                getBaseCallNoteActivity().showSnackbar(getString(R.string.unable_to_sign_in_error));
                 getBaseCallNoteActivity().dismissProgressDialog();
 
                 getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());

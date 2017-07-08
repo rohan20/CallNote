@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rohan.callnote2.BaseCallNoteFragment;
 import com.rohan.callnote2.R;
@@ -113,8 +112,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                         .COLUMN_SERVER_ID));
 
                 if (!getBaseCallNoteActivity().isNetworkConnected()) {
-                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_SHORT)
-                            .show();
+                    getBaseCallNoteActivity().showSnackbar(getString(R.string.please_connect_to_the_internet_error));
                     return;
                 }
 
@@ -129,8 +127,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     private void fetchNotesFromAPI() {
 
         if (!getBaseCallNoteActivity().isNetworkConnected()) {
-            Toast.makeText(getBaseCallNoteActivity(), getString(R.string.please_connect_to_the_internet_toast), Toast.LENGTH_SHORT)
-                    .show();
+            getBaseCallNoteActivity().showSnackbar(getString(R.string.please_connect_to_the_internet_error));
             return;
         }
 
@@ -176,16 +173,14 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     }
 
                 } else {
-                    Toast.makeText(getBaseCallNoteActivity(), getString(R.string
-                            .unable_to_fetch_notes), Toast.LENGTH_SHORT).show();
+                    getBaseCallNoteActivity().showSnackbar(getString(R.string.unable_to_fetch_notes));
                     getBaseCallNoteActivity().dismissProgressDialog();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<Note>>> call, Throwable t) {
-                Toast.makeText(getBaseCallNoteActivity(), getString(R.string
-                        .unable_to_fetch_notes), Toast.LENGTH_SHORT).show();
+                getBaseCallNoteActivity().showSnackbar(getString(R.string.unable_to_fetch_notes));
                 getBaseCallNoteActivity().dismissProgressDialog();
             }
         });
@@ -231,10 +226,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     break;
 
                 } else {
-
-                    Toast.makeText(getBaseCallNoteActivity(),
-                            getString(R.string.permission_required_call_log), Toast.LENGTH_SHORT)
-                            .show();
+                    getBaseCallNoteActivity().showSnackbar(getString(R.string.permission_required_call_log));
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -255,10 +247,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                     break;
 
                 } else {
-
-                    Toast.makeText(getBaseCallNoteActivity(),
-                            getString(R.string.permission_required_call_log), Toast.LENGTH_SHORT)
-                            .show();
+                    getBaseCallNoteActivity().showSnackbar(getString(R.string.permission_required_call_log));
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }

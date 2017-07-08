@@ -18,13 +18,13 @@
     <string name="unable_to_save_note_toast">Unable to save <no></no>te right now. Please try later.</string>
     <string name="note_cannot_be_empty">Note cannot be empty.</string>
     <string name="saving_note">Saving note...</string>
-    <string name="please_connect_to_the_internet_toast">Please connect to internet.</string>
+    <string name="please_connect_to_the_internet_error">Please connect to internet.</string>
     <string name="date_key">date</string>
     <string name="callType_key">callType</string>
     <string name="number_key">number</string>
     <string name="name_key">name</string>
-    <string name="failed_to_sign_in_toast">Failed to sign in. Please try later.</string>
-    <string name="unable_to_sign_in_toast">Unable to sign in right now. Please try later.</string>
+    <string name="failed_to_sign_in_error">Failed to sign in. Please try later.</string>
+    <string name="unable_to_sign_in_error">Unable to sign in right now. Please try later.</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out?</string>
     <string name="signed_out">Signed Out</string>
     <string name="yes">Yes</string>
