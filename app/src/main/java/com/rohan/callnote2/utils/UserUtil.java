@@ -42,7 +42,6 @@ public class UserUtil {
         return SharedPrefsUtil.retrieveStringValue(SharedPrefsUtil.USER_EMAIL, "");
     }
 
-
     public static String getToken() {
         return SharedPrefsUtil.retrieveStringValue(SharedPrefsUtil.USER_GOOGLE_TOKEN, null);
     }

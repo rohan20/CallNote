@@ -1,4 +1,4 @@
-package com.rohan.callnote2.utils;
+package com.rohan.callnote2.data;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  * Created by Rohan on 18-Jan-17.
  */
 
-public class Contract {
+public class NoteContract {
 
     public static final String CONTENT_AUTHORITY = "com.rohan.callnote";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);

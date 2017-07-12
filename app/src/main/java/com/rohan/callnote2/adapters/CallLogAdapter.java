@@ -47,7 +47,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHold
     public CallLogAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.item_call_log, parent, false);
+        View v = inflater.inflate(R.layout.item_call_log_layout, parent, false);
 
         return new ViewHolder(v);
     }

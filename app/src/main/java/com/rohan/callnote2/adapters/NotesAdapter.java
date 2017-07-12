@@ -162,7 +162,7 @@ public class NotesAdapter extends CursorRecyclerViewAdapter<NotesAdapter
     public NotesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.item_note, parent, false);
+        View v = inflater.inflate(R.layout.item_note_layout, parent, false);
 
         return new ViewHolder(v);
     }

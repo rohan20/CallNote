@@ -9,7 +9,7 @@ import android.widget.RemoteViewsService;
 
 import com.rohan.callnote2.R;
 import com.rohan.callnote2.models.Note;
-import com.rohan.callnote2.utils.Contract;
+import com.rohan.callnote2.data.NoteContract;
 import com.rohan.callnote2.utils.DBUtil;
 import com.rohan.callnote2.utils.UserUtil;
 
@@ -40,17 +40,17 @@ public class CallNoteWidgetListProvider implements RemoteViewsService.RemoteView
         }
         final long identityToken = Binder.clearCallingIdentity();
 
-        String selection = Contract.NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
+        String selection = NoteContract.NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
         String[] selectionArgs = new String[]{
                 UserUtil.getEmail()
         };
 
 
-        mCursor = mContext.getContentResolver().query(Contract.NotesEntry.CONTENT_URI,
-                new String[]{Contract.NotesEntry._ID, Contract.NotesEntry.COLUMN_SERVER_ID,
-                        Contract.NotesEntry.COLUMN_NUMBER, Contract.NotesEntry.COLUMN_NOTE_TEXT,
-                        Contract.NotesEntry.COLUMN_CALL_TYPE, Contract.NotesEntry
-                        .COLUMN_TIMESTAMP, Contract.NotesEntry.COLUMN_CURRENT_USER_EMAIL}, selection, selectionArgs, null);
+        mCursor = mContext.getContentResolver().query(NoteContract.NotesEntry.CONTENT_URI,
+                new String[]{NoteContract.NotesEntry._ID, NoteContract.NotesEntry.COLUMN_SERVER_ID,
+                        NoteContract.NotesEntry.COLUMN_NUMBER, NoteContract.NotesEntry.COLUMN_NOTE_TEXT,
+                        NoteContract.NotesEntry.COLUMN_CALL_TYPE, NoteContract.NotesEntry
+                        .COLUMN_TIMESTAMP, NoteContract.NotesEntry.COLUMN_CURRENT_USER_EMAIL}, selection, selectionArgs, null);
 
         Binder.restoreCallingIdentity(identityToken);
     }

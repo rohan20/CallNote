@@ -36,4 +36,5 @@
     <string name="unable_to_fetch_notes">Unable to fetch latest notes right now. Please try later.</string>
     <string name="permission_required_call_log">"Permission required to read "</string>
     <string name="note_deleted">Note deleted.</string>
+    <string name="view_app_on_playstore">Click on the app to view it on Google Play Store</string>
 </resources>

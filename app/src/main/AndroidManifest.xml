@@ -14,9 +14,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name="com.rohan.callnote2.BaseCallNoteActivity"
+            android:name=".BaseCallNoteActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -26,7 +25,7 @@
         </activity>
 
         <receiver
-            android:name="com.rohan.callnote2.CallStateReceiver"
+            android:name=".CallStateReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -35,12 +34,12 @@
         </receiver>
 
         <provider
-            android:name="com.rohan.callnote2.utils.CallNoteContentProvider"
+            android:name=".data.NoteContentProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true"/>
 
-        <receiver android:name="com.rohan.callnote2.widget.CallNoteWidget">
+        <receiver android:name=".widget.CallNoteWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -51,11 +50,12 @@
         </receiver>
 
         <service
-            android:name="com.rohan.callnote2.widget.CallNoteWidgetService"
+            android:name=".widget.CallNoteWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service android:name=".service.DeleteNoteService"/>
 
-        <service android:name="com.rohan.callnote2.service.DeleteNoteService"/>
-
+        <activity android:name=".AboutUsActivity">
+        </activity>
     </application>
 
 </manifest>

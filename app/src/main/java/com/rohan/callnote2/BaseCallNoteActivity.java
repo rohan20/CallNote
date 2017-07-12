@@ -192,6 +192,11 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             case R.id.action_sign_out:
                 signOut();
                 return true;
+
+            case R.id.action_about_us:
+                Intent i = new Intent(BaseCallNoteActivity.this, AboutUsActivity.class);
+                startActivity(i);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -305,12 +310,15 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     }
 
     public int getCallType(me.everything.providers.android.calllog.Call.CallType callType) {
-        if (callType.equals(me.everything.providers.android.calllog.Call.CallType.MISSED))
-            return Constants.CALL_MISSED;
-        else if (callType.equals(me.everything.providers.android.calllog.Call.CallType.INCOMING))
-            return Constants.CALL_RECEIVED;
-        else
-            return Constants.CALL_DIALED;
+
+        if (callType != null) {
+            if (callType.equals(me.everything.providers.android.calllog.Call.CallType.MISSED))
+                return Constants.CALL_MISSED;
+            else if (callType.equals(me.everything.providers.android.calllog.Call.CallType.INCOMING))
+                return Constants.CALL_RECEIVED;
+        }
+
+        return Constants.CALL_DIALED;
     }
 
     public void updateWidget() {

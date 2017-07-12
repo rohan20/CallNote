@@ -31,7 +31,7 @@ import com.rohan.callnote2.network.ApiClient;
 import com.rohan.callnote2.network.ApiResponse;
 import com.rohan.callnote2.service.DeleteNoteService;
 import com.rohan.callnote2.utils.Constants;
-import com.rohan.callnote2.utils.Contract.NotesEntry;
+import com.rohan.callnote2.data.NoteContract.NotesEntry;
 import com.rohan.callnote2.utils.DBUtil;
 import com.rohan.callnote2.utils.UserUtil;
 
@@ -189,13 +189,11 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
     private void fabClicked() {
         if (ContextCompat.checkSelfPermission(getBaseCallNoteActivity(),
-                android.Manifest.permission.READ_CALL_LOG)
-                != PackageManager.PERMISSION_GRANTED) {
+                android.Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
                     new String[]{android.Manifest.permission.READ_CALL_LOG},
                     Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB);
 
-            fabClicked();
         } else {
             getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
         }

@@ -1,4 +1,4 @@
-package com.rohan.callnote2.utils;
+package com.rohan.callnote2.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -13,19 +13,19 @@ import android.support.annotation.Nullable;
  * Created by Rohan on 19-Jan-17.
  */
 
-public class CallNoteContentProvider extends ContentProvider {
+public class NoteContentProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private DBOpenHelper mOpenHelper;
+    private NoteDbHelper mOpenHelper;
 
     static final int NOTES = 111;
 
     static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = Contract.CONTENT_AUTHORITY;
+        final String authority = NoteContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, Contract.PATH_NOTES, NOTES);
+        matcher.addURI(authority, NoteContract.PATH_NOTES, NOTES);
         //add other URIs here if required in the future
 
         return matcher;
@@ -33,7 +33,7 @@ public class CallNoteContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new DBOpenHelper(getContext());
+        mOpenHelper = new NoteDbHelper(getContext());
         return true;
     }
 
@@ -46,7 +46,7 @@ public class CallNoteContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
 
             case NOTES: {
-                retCursor = mOpenHelper.getReadableDatabase().query(Contract.NotesEntry.TABLE_NAME,
+                retCursor = mOpenHelper.getReadableDatabase().query(NoteContract.NotesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null,
                         null, sortOrder);
                 break;
@@ -67,7 +67,7 @@ public class CallNoteContentProvider extends ContentProvider {
 
         switch (match) {
             case NOTES:
-                return Contract.NotesEntry.CONTENT_TYPE;
+                return NoteContract.NotesEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -83,9 +83,9 @@ public class CallNoteContentProvider extends ContentProvider {
 
         switch (match) {
             case NOTES: {
-                long _id = db.insert(Contract.NotesEntry.TABLE_NAME, null, values);
+                long _id = db.insert(NoteContract.NotesEntry.TABLE_NAME, null, values);
                 if (_id > 0)
-                    returnUri = Contract.NotesEntry.buildNotesUri(_id);
+                    returnUri = NoteContract.NotesEntry.buildNotesUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -109,7 +109,7 @@ public class CallNoteContentProvider extends ContentProvider {
         switch (match) {
             case NOTES:
                 rowsDeleted = db.delete(
-                        Contract.NotesEntry.TABLE_NAME, selection, selectionArgs);
+                        NoteContract.NotesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -130,7 +130,7 @@ public class CallNoteContentProvider extends ContentProvider {
 
         switch (match) {
             case NOTES:
-                rowsUpdated = db.update(Contract.NotesEntry.TABLE_NAME, values, selection,
+                rowsUpdated = db.update(NoteContract.NotesEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
             default:
@@ -153,14 +153,14 @@ public class CallNoteContentProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         try {
-                            long _id = db.insertOrThrow(Contract.NotesEntry.TABLE_NAME, null, value);
+                            long _id = db.insertOrThrow(NoteContract.NotesEntry.TABLE_NAME, null, value);
                             if (_id != -1) {
                                 returnCount++;
                             }
                         } catch (SQLiteConstraintException e) {
-                            db.update(Contract.NotesEntry.TABLE_NAME, value,
-                                    Contract.NotesEntry.COLUMN_SERVER_ID + " = ?",
-                                    new String[]{value.getAsString(Contract.NotesEntry.COLUMN_SERVER_ID)});
+                            db.update(NoteContract.NotesEntry.TABLE_NAME, value,
+                                    NoteContract.NotesEntry.COLUMN_SERVER_ID + " = ?",
+                                    new String[]{value.getAsString(NoteContract.NotesEntry.COLUMN_SERVER_ID)});
                         }
 
                     }
