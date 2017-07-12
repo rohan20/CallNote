@@ -34,9 +34,9 @@ public class App {
         return appPlayStoreUrl;
     }
 
-//    movie roll icon - https://drive.google.com/open?id=0B8LprY261E9IN2tmNUwxeXNodDg
-//    call note icon - https://drive.google.com/open?id=0B8LprY261E9IV1VFVUZ2N3dsOVU
-//    balloon popper icon - https://drive.google.com/open?id=0B8LprY261E9IU3JhQUZXczdjaGM
+//    movie roll icon - http://i.imgur.com/T5Q7izs.png
+//    call note icon - http://i.imgur.com/S2eUZTi.png
+//    balloon popper icon - http://i.imgur.com/w5GY0yX.png
 
 //    https://play.google.com/store/apps/details?id=com.rohan.movieroll
 //    https://play.google.com/store/apps/details?id=com.rohan.callnote2

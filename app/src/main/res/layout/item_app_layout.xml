@@ -14,11 +14,11 @@
         android:padding="16dp">
 
         <ImageView
-            android:layout_marginEnd="8dp"
             android:id="@+id/app_icon_image_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
             android:src="@drawable/callnote_logo"/>
 
         <TextView
