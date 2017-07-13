@@ -9,16 +9,16 @@ import android.support.v7.widget.RecyclerView;
  * Created by Rohan on 19-Jan-17.
  */
 
-public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends
+public abstract class CustomCursorAdapter<VH extends RecyclerView.ViewHolder> extends
         RecyclerView.Adapter<VH> {
 
-    private static final String LOG_TAG = CursorRecyclerViewAdapter.class.getSimpleName();
+    private static final String LOG_TAG = CustomCursorAdapter.class.getSimpleName();
     private Cursor mCursor;
     private boolean dataIsValid;
     private int rowIdColumn;
     private DataSetObserver mDataSetObserver;
 
-    public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
+    public CustomCursorAdapter(Context context, Cursor cursor) {
         mCursor = cursor;
         dataIsValid = cursor != null;
         rowIdColumn = dataIsValid ? mCursor.getColumnIndex("_id") : -1;

@@ -37,7 +37,7 @@ import me.everything.providers.android.calllog.CallsProvider;
  * Created by Rohan on 19-Jan-17.
  */
 
-public class NotesAdapter extends CursorRecyclerViewAdapter<NotesAdapter
+public class NotesAdapter extends CustomCursorAdapter<NotesAdapter
         .ViewHolder> {
 
     private Context mContext;
@@ -46,6 +46,8 @@ public class NotesAdapter extends CursorRecyclerViewAdapter<NotesAdapter
         super(context, cursor);
         mContext = context;
     }
+
+
 
     @Override
     public void onBindViewHolder(NotesAdapter.ViewHolder holder, Cursor cursor) {

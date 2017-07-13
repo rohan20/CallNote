@@ -3,7 +3,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_sign_out"
-        android:orderInCategory="2"
+        android:orderInCategory="99"
         android:title="@string/sign_out"
         app:showAsAction="never"/>
 
@@ -12,5 +12,19 @@
         android:orderInCategory="1"
         android:title="About Us"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_how_to_use"
+        android:orderInCategory="3"
+        android:title="FAQ"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="0"
+        android:title="Settings"
+        app:showAsAction="never"/>
+
+
 
 </menu>

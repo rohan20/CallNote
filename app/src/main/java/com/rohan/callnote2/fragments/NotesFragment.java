@@ -123,8 +123,10 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
                 mCursor.moveToPosition(viewHolder.getAdapterPosition());
-                int serverIDToBeDeleted = mCursor.getInt(mCursor.getColumnIndex(NotesEntry
+
+                int noteToBeDeletedId = mCursor.getInt(mCursor.getColumnIndex(NotesEntry
                         .COLUMN_SERVER_ID));
 
                 if (!getBaseCallNoteActivity().isNetworkConnected()) {
@@ -133,8 +135,12 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                 }
 
                 Intent intent = new Intent(getBaseCallNoteActivity(), DeleteNoteService.class);
-                intent.putExtra(Constants.NOTE_TO_BE_DELETED, serverIDToBeDeleted);
+                intent.putExtra(Constants.NOTE_TO_BE_DELETED, noteToBeDeletedId);
                 getBaseCallNoteActivity().startService(intent);
+
+                // TODO: 13-Jul-17
+//                getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
+//                        NotesFragment.this);
             }
         }).attachToRecyclerView(mNotesRecyclerView);
 
@@ -283,83 +289,23 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        return new AsyncTaskLoader<Cursor>(getBaseCallNoteActivity()) {
-
-            // Initialize a Cursor, this will hold all the task data
-            Cursor mNotesData = null;
-
-            // onStartLoading() is called when a loader first starts loading data
-            @Override
-            protected void onStartLoading() {
-                if (mNotesData != null) {
-                    // Delivers any previously loaded data immediately
-                    deliverResult(mNotesData);
-                } else {
-                    // Force a new load
-                    forceLoad();
-                }
-            }
-
-            // loadInBackground() performs asynchronous loading of data
-            @Override
-            public Cursor loadInBackground() {
-                // Will implement to load data
-
-                String[] projection = new String[]{
-                        NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
-                        NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
-                        NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP,
-                        NotesEntry.COLUMN_CURRENT_USER_EMAIL
-                };
-                String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
-                String[] selectionArgs = new String[]{
-                        UserUtil.getEmail()
-                };
-
-
-                try {
-
-                    return getBaseCallNoteActivity().getContentResolver().query(
-                            NotesEntry.CONTENT_URI,
-                            projection,
-                            selection,
-                            selectionArgs,
-                            null);
-
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to asynchronously load data.");
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            // deliverResult sends the result of the load, a Cursor, to the registered listener
-            public void deliverResult(Cursor data) {
-                mNotesData = data;
-                super.deliverResult(data);
-            }
+        String[] projection = new String[]{
+                NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
+                NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
+                NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP,
+                NotesEntry.COLUMN_CURRENT_USER_EMAIL
+        };
+        String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
+        String[] selectionArgs = new String[]{
+                UserUtil.getEmail()
         };
 
-
-        //////
-
-//        String[] projection = new String[]{
-//                NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
-//                NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
-//                NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP,
-//                NotesEntry.COLUMN_CURRENT_USER_EMAIL
-//        };
-//        String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
-//        String[] selectionArgs = new String[]{
-//                UserUtil.getEmail()
-//        };
-//
-//        return new CursorLoader(getActivity(),
-//                NotesEntry.CONTENT_URI,
-//                projection,
-//                selection,
-//                selectionArgs,
-//                null);
+        return new CursorLoader(getActivity(),
+                NotesEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null);
     }
 
     @Override

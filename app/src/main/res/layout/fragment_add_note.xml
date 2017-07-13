@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                    xmlns:tools="http://schemas.android.com/tools"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="16dp"
-                                    tools:context="com.rohan.callnote2.fragments.AddNoteFragment">
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.rohan.callnote2.fragments.AddNoteFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="16dp">
 
         <TextView
+            android:textStyle="bold"
             android:id="@+id/add_note_call_name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textSize="18sp"/>
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:text="Rohan Taneja"
+            android:textSize="22sp"/>
 
         <LinearLayout
             android:id="@+id/add_note_call_details_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/add_note_call_name_text_view"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/add_note_call_type_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.25"
+                android:layout_height="40dp"
                 android:contentDescription="@string/call_type"
                 android:paddingEnd="5dp"
                 android:paddingStart="0dp"
@@ -37,17 +43,24 @@
 
             <TextView
                 android:id="@+id/add_note_call_number_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="10dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|end"
+                android:paddingEnd="8dp"
                 android:paddingStart="0dp"
-                android:textStyle="bold"/>
+                android:text="+919898989898"
+                android:textSize="18sp"
+                />
 
             <TextView
                 android:id="@+id/add_note_call_date_text_view"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Jul 10, 21:37"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -55,14 +68,16 @@
             android:id="@+id/add_note_buttons_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="8dp">
 
             <Button
                 android:id="@+id/add_note_cancel_button"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
-                android:layout_marginEnd="1dp"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_border_drawable"
                 android:text="@string/cancel"
                 android:textAllCaps="true"
                 android:theme="@style/MyButton"/>
@@ -71,8 +86,9 @@
                 android:id="@+id/add_note_save_button"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="1dp"
+                android:layout_marginStart="4dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_border_drawable"
                 android:text="@string/save"
                 android:textAllCaps="true"
                 android:theme="@style/MyButton"/>
@@ -87,7 +103,7 @@
             android:layout_below="@id/add_note_call_details_linear_layout"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="15dp"
-            android:background="#f5f5f5"
+            android:background="@drawable/rounded_border_drawable"
             android:fontFamily="serif"
             android:gravity="start"
             android:hint="@string/note_hint"
@@ -96,7 +112,7 @@
             android:paddingBottom="4dp"
             android:paddingEnd="4dp"
             android:paddingStart="8dp"
-            android:paddingTop="4dp"
+            android:paddingTop="8dp"
             android:textSize="16sp"
             tools:ignore="LabelFor"/>
 
