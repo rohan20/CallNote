@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 
 import com.rohan.callnote2.utils.Constants;
+import com.rohan.callnote2.utils.SharedPrefsUtil;
 
 /**
  * Created by Rohan on 08-Jan-17.

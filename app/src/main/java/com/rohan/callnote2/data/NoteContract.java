@@ -11,8 +11,9 @@ import android.provider.BaseColumns;
 
 public class NoteContract {
 
+    public static final String SCHEME = "content://";
     public static final String CONTENT_AUTHORITY = "com.rohan.callnote";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + CONTENT_AUTHORITY);
 
     public static final String PATH_NOTES = "notes";
 

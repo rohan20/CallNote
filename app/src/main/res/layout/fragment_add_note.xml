@@ -51,42 +51,41 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/add_note_buttons_relative_layout"
+        <LinearLayout
+            android:id="@+id/add_note_buttons_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="5dp">
-
-            <Button
-                android:id="@+id/add_note_save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="4dp"
-                android:background="#f5f5f5"
-                android:text="@string/save"
-                android:textAllCaps="false"/>
+            android:layout_alignParentBottom="true">
 
             <Button
                 android:id="@+id/add_note_cancel_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_toStartOf="@id/add_note_save_button"
-                android:background="#f5f5f5"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="1dp"
+                android:layout_weight="1"
                 android:text="@string/cancel"
-                android:textAllCaps="false"/>
+                android:textAllCaps="true"
+                android:theme="@style/MyButton"/>
 
-        </RelativeLayout>
+            <Button
+                android:id="@+id/add_note_save_button"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="1dp"
+                android:layout_weight="1"
+                android:text="@string/save"
+                android:textAllCaps="true"
+                android:theme="@style/MyButton"/>
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/add_note_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/add_note_buttons_relative_layout"
+            android:layout_above="@id/add_note_buttons_linear_layout"
             android:layout_below="@id/add_note_call_details_linear_layout"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginTop="15dp"
             android:background="#f5f5f5"
             android:fontFamily="serif"

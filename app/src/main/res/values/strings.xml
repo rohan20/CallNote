@@ -37,4 +37,5 @@
     <string name="permission_required_call_log">"Permission required to read "</string>
     <string name="note_deleted">Note deleted.</string>
     <string name="view_app_on_playstore">Click on the app to view it on Google Play Store</string>
+    <string name="fetching_your_notes">Fetching your notes....</string>
 </resources>

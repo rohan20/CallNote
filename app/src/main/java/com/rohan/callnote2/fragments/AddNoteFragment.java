@@ -52,6 +52,8 @@ public class AddNoteFragment extends BaseCallNoteFragment {
     @BindView(R.id.add_note_cancel_button)
     Button mCancelButton;
 
+    InputMethodManager imm;
+
     String name;
     String number;
     int callType;
@@ -73,8 +75,7 @@ public class AddNoteFragment extends BaseCallNoteFragment {
         mNoteEditText.requestFocus();
         Bundle b = getArguments();
 
-        InputMethodManager imm = (InputMethodManager) getBaseCallNoteActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        imm = (InputMethodManager) getBaseCallNoteActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         if (b != null) {
             name = b.getString(getString(R.string.name_key));
@@ -134,9 +135,16 @@ public class AddNoteFragment extends BaseCallNoteFragment {
             @Override
             public void onResponse(Call<ApiResponse<Note>> call, Response<ApiResponse<Note>> response) {
                 if (response.isSuccessful()) {
+
+                    imm.hideSoftInputFromWindow((null == getBaseCallNoteActivity()
+                                    .getCurrentFocus()) ? null : getBaseCallNoteActivity().getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), false, NotesFragment.class.getSimpleName());
                     getBaseCallNoteActivity().dismissProgressDialog();
                     getBaseCallNoteActivity().updateWidget();
+                    getBaseCallNoteActivity().showFetchingNotesProgressDialog(getString(R.string.fetching_your_notes));
+
                 } else {
                     getBaseCallNoteActivity().showSnackbar(getString(R.string.unable_to_sign_in_error));
                     getBaseCallNoteActivity().switchFragment(new NotesFragment(), NotesFragment.class.getSimpleName());

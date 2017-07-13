@@ -42,11 +42,13 @@ public class NoteContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
 
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
 
             case NOTES: {
-                retCursor = mOpenHelper.getReadableDatabase().query(NoteContract.NotesEntry.TABLE_NAME,
+                retCursor = db.query(NoteContract.NotesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null,
                         null, sortOrder);
                 break;
@@ -57,20 +59,6 @@ public class NoteContentProvider extends ContentProvider {
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
-    }
-
-    @Nullable
-    @Override
-    public String getType(Uri uri) {
-
-        final int match = sUriMatcher.match(uri);
-
-        switch (match) {
-            case NOTES:
-                return NoteContract.NotesEntry.CONTENT_TYPE;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
     }
 
     @Nullable
@@ -93,7 +81,10 @@ public class NoteContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
+        if (getContext() != null)
+            getContext().getContentResolver().notifyChange(uri, null);
+
         return returnUri;
     }
 
@@ -116,7 +107,8 @@ public class NoteContentProvider extends ContentProvider {
         }
         // Because a null deletes all rows
         if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null)
+                getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
     }
@@ -137,7 +129,8 @@ public class NoteContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null)
+                getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
     }
@@ -168,11 +161,28 @@ public class NoteContentProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+
+                if (getContext() != null)
+                    getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:
                 return super.bulkInsert(uri, values);
         }
     }
+
+    @Nullable
+    @Override
+    public String getType(Uri uri) {
+
+        final int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case NOTES:
+                return NoteContract.NotesEntry.CONTENT_TYPE;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+    }
+
 
 }

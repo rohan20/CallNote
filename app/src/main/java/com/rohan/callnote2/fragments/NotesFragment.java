@@ -11,12 +11,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -92,7 +96,19 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
         mAdapterNotes = new NotesAdapter(getBaseCallNoteActivity(), null);
         mNotesRecyclerView.setAdapter(mAdapterNotes);
-        mNotesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager
+                (2, StaggeredGridLayoutManager.VERTICAL) {
+            @Override
+            public void onLayoutCompleted(RecyclerView.State state) {
+                super.onLayoutCompleted(state);
+                // TODO: 12-Jul-17 Correct this; What's causing the delay? Loader, CProvider
+                // or Network Call?
+                getBaseCallNoteActivity().dismissFetchingNotesProgressDialog();
+                return;
+            }
+        };
+
+        mNotesRecyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         fetchNotesFromAPI();
 
@@ -261,24 +277,89 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
-
         getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
-        String[] selectionArgs = new String[]{
-                UserUtil.getEmail()
-        };
+        return new AsyncTaskLoader<Cursor>(getBaseCallNoteActivity()) {
 
-        return new CursorLoader(getActivity(), NotesEntry.CONTENT_URI,
-                new String[]{NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
+            // Initialize a Cursor, this will hold all the task data
+            Cursor mNotesData = null;
+
+            // onStartLoading() is called when a loader first starts loading data
+            @Override
+            protected void onStartLoading() {
+                if (mNotesData != null) {
+                    // Delivers any previously loaded data immediately
+                    deliverResult(mNotesData);
+                } else {
+                    // Force a new load
+                    forceLoad();
+                }
+            }
+
+            // loadInBackground() performs asynchronous loading of data
+            @Override
+            public Cursor loadInBackground() {
+                // Will implement to load data
+
+                String[] projection = new String[]{
+                        NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
                         NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
                         NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP,
-                        NotesEntry.COLUMN_CURRENT_USER_EMAIL},
-                selection, selectionArgs, null);
+                        NotesEntry.COLUMN_CURRENT_USER_EMAIL
+                };
+                String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
+                String[] selectionArgs = new String[]{
+                        UserUtil.getEmail()
+                };
+
+
+                try {
+
+                    return getBaseCallNoteActivity().getContentResolver().query(
+                            NotesEntry.CONTENT_URI,
+                            projection,
+                            selection,
+                            selectionArgs,
+                            null);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to asynchronously load data.");
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            // deliverResult sends the result of the load, a Cursor, to the registered listener
+            public void deliverResult(Cursor data) {
+                mNotesData = data;
+                super.deliverResult(data);
+            }
+        };
+
+
+        //////
+
+//        String[] projection = new String[]{
+//                NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
+//                NotesEntry.COLUMN_NUMBER, NotesEntry.COLUMN_NOTE_TEXT,
+//                NotesEntry.COLUMN_CALL_TYPE, NotesEntry.COLUMN_TIMESTAMP,
+//                NotesEntry.COLUMN_CURRENT_USER_EMAIL
+//        };
+//        String selection = NotesEntry.COLUMN_CURRENT_USER_EMAIL + "=?";
+//        String[] selectionArgs = new String[]{
+//                UserUtil.getEmail()
+//        };
+//
+//        return new CursorLoader(getActivity(),
+//                NotesEntry.CONTENT_URI,
+//                projection,
+//                selection,
+//                selectionArgs,
+//                null);
     }
 
     @Override

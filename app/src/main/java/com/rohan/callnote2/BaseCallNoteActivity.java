@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -60,6 +61,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     GoogleApiClient mGoogleApiClient;
     public static BaseCallNoteActivity instance;
     private ProgressDialog signInProgressDialog;
+    private ProgressDialog fetchingNotesProgressDialog;
 
     public FirebaseAnalytics mFirebaseAnalytics;
 
@@ -68,6 +70,7 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
+        Log.e("onn", "onCreate()");
         instance = this;
 
         // Obtain the FirebaseAnalytics instance.
@@ -82,6 +85,10 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         signInProgressDialog = new ProgressDialog(this);
         signInProgressDialog.setCancelable(true);
         signInProgressDialog.setCanceledOnTouchOutside(false);
+
+        fetchingNotesProgressDialog = new ProgressDialog(this);
+        fetchingNotesProgressDialog.setCancelable(true);
+        fetchingNotesProgressDialog.setCanceledOnTouchOutside(false);
 
         switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
 
@@ -98,8 +105,23 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("onn", "onRestart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("onn", "onResume()");
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
+
+        Log.e("onn", "onStart()");
+        // TODO: 12-Jul-17 Move this code to onCreate() + onRestart()?
 
         Bundle b = new Bundle();
         b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false);
@@ -303,6 +325,15 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
 
     public void dismissProgressDialog() {
         signInProgressDialog.dismiss();
+    }
+
+    public void showFetchingNotesProgressDialog(String message) {
+        fetchingNotesProgressDialog.setMessage(message);
+        fetchingNotesProgressDialog.show();
+    }
+
+    public void dismissFetchingNotesProgressDialog() {
+        fetchingNotesProgressDialog.dismiss();
     }
 
     @Override
