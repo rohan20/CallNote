@@ -24,4 +24,10 @@ public class Constants {
 
     public static final String NOTE_TO_BE_DELETED = "note_to_be_deleted";
 
+    public static final String MY_FACEBOOK_URL = "https://www.facebook.com/rohantaneja20";
+    public static final String MY_LINKEDIN_URL = "https://www.linkedin.com/in/rohantaneja/";
+    public static final String MY_GMAIL_EMAIL = "rhntnj@gmail.com";
+    public static final String MY_GITHUB_URL = "https://github.com/rohan20";
+    public static final String MY_QUORA_URL = "https://www.quora.com/profile/Rohan-Taneja-1";
+
 }
