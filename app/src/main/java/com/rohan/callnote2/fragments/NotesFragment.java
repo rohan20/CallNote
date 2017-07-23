@@ -94,6 +94,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
     private void setupNotesFragment() {
 
+        Log.e("onn", "setupNotesFragment()");
+
         mAdapterNotes = new NotesAdapter(getBaseCallNoteActivity(), null);
         mNotesRecyclerView.setAdapter(mAdapterNotes);
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager
@@ -104,15 +106,12 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                 // TODO: 12-Jul-17 Correct this; What's causing the delay? Loader, CProvider
                 // or Network Call?
                 getBaseCallNoteActivity().dismissFetchingNotesProgressDialog();
-                return;
             }
         };
 
         mNotesRecyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         fetchNotesFromAPI();
-
-        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
@@ -123,6 +122,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.e("onn", "onSwiped()");
 
                 mCursor.moveToPosition(viewHolder.getAdapterPosition());
 
@@ -144,9 +144,13 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
             }
         }).attachToRecyclerView(mNotesRecyclerView);
 
+//        getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
+        Log.e("onn", "initLoader()");
     }
 
     private void fetchNotesFromAPI() {
+
+        Log.e("onn", "fetchNotesFromAPI()");
 
         if (!getBaseCallNoteActivity().isNetworkConnected()) {
             getBaseCallNoteActivity().showSnackbar(getString(R.string.please_connect_to_the_internet_error));
@@ -159,6 +163,8 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
             @Override
             public void onResponse(Call<ApiResponse<List<Note>>> call, Response<ApiResponse<List<Note>>> response) {
                 if (response.isSuccessful()) {
+
+                    Log.e("onn", "success");
 
                     List<Note> notesList = response.body().getData();
                     Collections.reverse(notesList);
@@ -177,8 +183,7 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
                         if (getBaseCallNoteActivity() != null)
                             getBaseCallNoteActivity().getApplicationContext().getContentResolver()
-                                    .bulkInsert(
-                                            NotesEntry.CONTENT_URI, cvArray);
+                                    .bulkInsert(NotesEntry.CONTENT_URI, cvArray);
                     }
 
                     if (getBaseCallNoteActivity() != null)
@@ -186,12 +191,17 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
 
                     if (isAdded()) {
 
-                        if (getLoaderManager().hasRunningLoaders())
+                        Log.e("onn", "isAdded()");
+
+                        if (getLoaderManager().hasRunningLoaders()) {
+                            Log.e("onn", "hasRunningLoaders()");
                             getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
                                     NotesFragment.this);
-                        else
+                        } else {
+                            Log.e("onn", "does not have running Loaders()");
                             getLoaderManager().initLoader(Constants.NOTES_CURSOR_LOADER_ID, null,
                                     NotesFragment.this);
+                        }
                     }
 
                 } else {
@@ -283,11 +293,13 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
+//        getLoaderManager().restartLoader(Constants.NOTES_CURSOR_LOADER_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Log.e("onn", "onCreateLoader()");
 
         String[] projection = new String[]{
                 NotesEntry._ID, NotesEntry.COLUMN_SERVER_ID,
@@ -327,12 +339,18 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
         }
 
         getBaseCallNoteActivity().updateWidget();
+
+        Log.e("onn", "onLoadFinished()");
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mAdapterNotes != null)
+        if (mAdapterNotes != null) {
             mAdapterNotes.swapCursor(null);
+            Log.e("onn", "onLoaderReset() != null");
+        }
+
+        Log.e("onn", "onLoaderReset() = null");
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 /**
  * Created by Rohan on 19-Jan-17.
@@ -68,7 +69,11 @@ public abstract class CustomCursorAdapter<VH extends RecyclerView.ViewHolder> ex
     }
 
     public Cursor swapCursor(Cursor newCursor) {
+
+        Log.e("onn", "swapCursor started");
+
         if (newCursor == mCursor) {
+            Log.e("onn", "swapCursor returned null");
             return null;
         }
         final Cursor oldCursor = mCursor;
@@ -88,6 +93,8 @@ public abstract class CustomCursorAdapter<VH extends RecyclerView.ViewHolder> ex
             dataIsValid = false;
             notifyDataSetChanged();
         }
+
+        Log.e("onn", "swapCursor returned oldCursor");
         return oldCursor;
     }
 

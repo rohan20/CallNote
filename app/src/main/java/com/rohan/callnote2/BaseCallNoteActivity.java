@@ -90,7 +90,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         fetchingNotesProgressDialog.setCancelable(true);
         fetchingNotesProgressDialog.setCanceledOnTouchOutside(false);
 
-        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
 
         GoogleSignInOptions googleSignInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -102,6 +101,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
                 .enableAutoManage(BaseCallNoteActivity.this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
+
+        switchFragment(new LoginFragment(), LoginFragment.class.getSimpleName());
     }
 
     @Override
@@ -131,6 +132,18 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
             b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, true);
             switchFragment(new LoginFragment(), false, b, LoginFragment.class.getSimpleName());
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("onn", "onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("onn", "onStop()");
     }
 
     public static BaseCallNoteActivity getInstance() {
