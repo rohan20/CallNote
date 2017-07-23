@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.rohan.callnote2.adapters.AppsAdapter;
 import com.rohan.callnote2.models.App;
 import com.rohan.callnote2.utils.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,11 @@ public class AboutUsActivity extends AppCompatActivity implements View.OnClickLi
     RecyclerView mAppsRecyclerView;
     AppsAdapter mAppsAdapter;
 
-    ImageView mFacebookButton;
-    ImageView mLinkedInButton;
-    ImageView mGmailButton;
-    ImageView mGithubButton;
-    ImageView mQuoraButton;
+    ImageView mFacebookImageView;
+    ImageView mLinkedInImageView;
+    ImageView mGmailImageView;
+    ImageView mGithubImageView;
+    ImageView mQuoraImageView;
 
     String mURL;
     Intent i;
@@ -46,17 +47,33 @@ public class AboutUsActivity extends AppCompatActivity implements View.OnClickLi
         mAppsAdapter = new AppsAdapter(this, getAppsList());
         mAppsRecyclerView.setAdapter(mAppsAdapter);
 
-        mFacebookButton = (ImageView) findViewById(R.id.facebook_icon_image_view);
-        mLinkedInButton = (ImageView) findViewById(R.id.linkedin_icon_image_view);
-        mGmailButton = (ImageView) findViewById(R.id.gmail_icon_image_view);
-        mGithubButton = (ImageView) findViewById(R.id.github_icon_image_view);
-        mQuoraButton = (ImageView) findViewById(R.id.quora_icon_image_view);
+        mFacebookImageView = (ImageView) findViewById(R.id.facebook_icon_image_view);
+        mLinkedInImageView = (ImageView) findViewById(R.id.linkedin_icon_image_view);
+        mGmailImageView = (ImageView) findViewById(R.id.gmail_icon_image_view);
+        mGithubImageView = (ImageView) findViewById(R.id.github_icon_image_view);
+        mQuoraImageView = (ImageView) findViewById(R.id.quora_icon_image_view);
 
-        mFacebookButton.setOnClickListener(this);
-        mLinkedInButton.setOnClickListener(this);
-        mGmailButton.setOnClickListener(this);
-        mGithubButton.setOnClickListener(this);
-        mQuoraButton.setOnClickListener(this);
+        Picasso.with(this).load(Constants.FACEBOOK_ICON)
+                .placeholder(R.drawable.placeholder_no_image_available)
+                .into(mFacebookImageView);
+        Picasso.with(this).load(Constants.LINKEDIN_ICON)
+                .placeholder(R.drawable.placeholder_no_image_available)
+                .into(mLinkedInImageView);
+        Picasso.with(this).load(Constants.GMAIL_ICON)
+                .placeholder(R.drawable.placeholder_no_image_available)
+                .into(mGmailImageView);
+        Picasso.with(this).load(Constants.QUORA_ICON)
+                .placeholder(R.drawable.placeholder_no_image_available)
+                .into(mQuoraImageView);
+        Picasso.with(this).load(Constants.GITHUB_ICON)
+                .placeholder(R.drawable.placeholder_no_image_available)
+                .into(mGithubImageView);
+
+        mFacebookImageView.setOnClickListener(this);
+        mLinkedInImageView.setOnClickListener(this);
+        mGmailImageView.setOnClickListener(this);
+        mGithubImageView.setOnClickListener(this);
+        mQuoraImageView.setOnClickListener(this);
 
         mURL = Constants.MY_LINKEDIN_URL;
         i = new Intent(Intent.ACTION_VIEW);
@@ -67,9 +84,11 @@ public class AboutUsActivity extends AppCompatActivity implements View.OnClickLi
         List<App> appsList = new ArrayList<>();
 
         appsList.add(new App("Movie Roll", "This app allows you to check out the top rated and " +
-                "most popular apps using TMDB API", "http://i.imgur.com/T5Q7izs.png", "https://play.google" +
-                ".com/store/apps/details?id=com.rohan.movieroll"));
-        appsList.add(new App("Balloon Popper", "Easy to play game where you get pop as many balloons as you can buy just touching them. The catch? You get only 5 lives!", "http://i.imgur.com/w5GY0yX.png", "https://play.google" +
+                "most popular apps using TMDB API", "http://i.imgur.com/T5Q7izs.png",
+                "https://play.google.com/store/apps/details?id=com.rohan.movieroll"));
+        appsList.add(new App("Balloon Popper", "Easy to play game where you get pop as many balloons" +
+                " as you can buy just touching them. The catch? You get only 5 lives!",
+                "http://i.imgur.com/w5GY0yX.png", "https://play.google" +
                 ".com/store/apps/details?id=com.rohan.balloongame"));
 
         return appsList;

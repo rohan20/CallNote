@@ -30,4 +30,10 @@ public class Constants {
     public static final String MY_GITHUB_URL = "https://github.com/rohan20";
     public static final String MY_QUORA_URL = "https://www.quora.com/profile/Rohan-Taneja-1";
 
+    public static final String FACEBOOK_ICON = "http://i.imgur.com/URPZTQE.png";
+    public static final String LINKEDIN_ICON = "http://i.imgur.com/cZVVwvM.png";
+    public static final String GITHUB_ICON = "http://i.imgur.com/nDYA6lV.png";
+    public static final String QUORA_ICON = "http://i.imgur.com/YaVE4mL.png";
+    public static final String GMAIL_ICON = "http://i.imgur.com/PhT2uvk.png";
+
 }

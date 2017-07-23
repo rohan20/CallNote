@@ -122,7 +122,6 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         super.onStart();
 
         Log.e("onn", "onStart()");
-        // TODO: 12-Jul-17 Move this code to onCreate() + onRestart()?
 
         Bundle b = new Bundle();
         b.putBoolean(Constants.ADD_NOTE_DIRECTLY_FROM_CALL, false);
@@ -327,7 +326,8 @@ public class BaseCallNoteActivity extends AppCompatActivity implements GoogleApi
         if (bundle != null) {
             fragment.setArguments(bundle);
         }
-        fragmentTransaction.replace(R.id.containerView, fragment, tag).commit();
+//        fragmentTransaction.replace(R.id.containerView, fragment, tag).commit();
+        fragmentTransaction.replace(R.id.containerView, fragment, tag).commitAllowingStateLoss();
 
     }
 

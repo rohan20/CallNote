@@ -41,45 +41,46 @@
             android:id="@+id/social_media_icons_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_below="@id/developer_name_text_view"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp">
 
 
             <ImageView
+                android:contentDescription="@string/facebook"
                 android:id="@+id/facebook_icon_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/facebook_icon"/>
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
 
             <ImageView
+                android:contentDescription="@string/linkedin"
                 android:id="@+id/linkedin_icon_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/linkedin_icon"/>
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
 
             <ImageView
+                android:contentDescription="@string/github"
                 android:id="@+id/github_icon_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/github_icon"/>
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
 
             <ImageView
+                android:contentDescription="@string/gmail"
                 android:id="@+id/gmail_icon_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/gmail_icon"/>
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
 
             <ImageView
+                android:contentDescription="@string/quora"
                 android:id="@+id/quora_icon_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/quora_icon"/>
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 

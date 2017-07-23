@@ -1,6 +1,7 @@
 package com.rohan.callnote2.fragments;
 
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,6 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.Manifest.permission.READ_CALL_LOG;
 import static android.content.ContentValues.TAG;
 
 
@@ -220,10 +222,14 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
     }
 
     private void fabClicked() {
+
+        Log.e("onn permission", ContextCompat.checkSelfPermission(getBaseCallNoteActivity(),
+                Manifest.permission.READ_CALL_LOG) + "");
+
         if (ContextCompat.checkSelfPermission(getBaseCallNoteActivity(),
-                android.Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getBaseCallNoteActivity(),
-                    new String[]{android.Manifest.permission.READ_CALL_LOG},
+                READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{Manifest.permission.READ_CALL_LOG},
                     Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG_FAB);
 
         } else {
@@ -250,42 +256,21 @@ public class NotesFragment extends BaseCallNoteFragment implements View.OnClickL
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    getBaseCallNoteActivity().switchFragment(new CallLogFragment(), true, CallLogFragment.class.getSimpleName());
+                    // permission was granted, yay! Do the contacts-related task you need to do.
+                    getBaseCallNoteActivity()
+                            .switchFragment(new CallLogFragment(), true,
+                                    CallLogFragment.class.getSimpleName());
                     break;
 
                 } else {
-                    getBaseCallNoteActivity().showSnackbar(getString(R.string.permission_required_call_log));
+                    getBaseCallNoteActivity()
+                            .showSnackbar(getString(R.string.permission_required_call_log));
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
             }
 
-            case Constants.MY_PERMISSIONS_REQUEST_READ_CALL_LOG: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    if (mAdapterNotes != null)
-                        mAdapterNotes.notifyDataSetChanged();
-                    else
-                        mAdapterNotes = new NotesAdapter(getBaseCallNoteActivity(), null);
-
-                    break;
-
-                } else {
-                    getBaseCallNoteActivity().showSnackbar(getString(R.string.permission_required_call_log));
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-            }
-
-
-            // other 'case' lines to check for other
-            // permissions this app might request
+            // other 'case' lines to check for other permissions this app might request
         }
 
     }
